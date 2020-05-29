@@ -86,7 +86,7 @@
                         <CALL> check_top </CALL>
                         <SWITCH> <CONDITION> <CHECK> <VAR name = tmp /VAR> </CHECK>
                              <DO> 
-                                <ASSIGN> <VALUE>  <ADD> <VAR name = y /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = y /VAR> </TO> </ASSIGN>
+                                <ASSIGN> <VALUE>  <ADD> <VAR name = y /VAR> -1 </ADD> </VALUE> <TO>  <VAR name = y /VAR> </TO> </ASSIGN>
                                 <UP> 1 </UP>
                                 <ASSIGN> <VALUE> 1 </VALUE> <TO> <VAR name =map <DIM> 
                                                                             <INDEX> <VAR name = x /VAR> </INDEX> 
@@ -159,7 +159,7 @@
                         <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
                     </DO>
                 </CONDITION>
-                <CONDITION> <CHECK> <EQ> <NOT> <VAR name = n /VAR> 0 </EQ> </NOT> </CHECK>
+                <CONDITION> <CHECK> <NOT> <EQ>  <VAR name = n /VAR> 0 </EQ> </NOT> </CHECK>
                     <DO> 
                         <ASSIGN> <VALUE>  <SENDDRONS> 1 </SENDDRONS> </VALUE> <TO>  <VAR name = array /VAR> </TO> </ASSIGN>
                         <WHILE> 
@@ -196,8 +196,8 @@
                         <SWITCH>
                             <CONDITION> 
                                 <CHECK> <EQ> <VAR name =array <DIM> 
-                                                                <INDEX> <VAR name = 5 /VAR> </INDEX> 
-                                                                <INDEX> <VAR name = 4 /VAR> </INDEX> 
+                                                                <INDEX> 5  </INDEX> 
+                                                                <INDEX>  4  </INDEX> 
                                                                 </DIM> </VAR>
                                             EMPTY </EQ> </CHECK>
                                 <DO>
@@ -207,8 +207,8 @@
                             </CONDITION>
                             <CONDITION> 
                                 <CHECK> <EQ> <VAR name =array <DIM> 
-                                                                <INDEX> <VAR name = 5 /VAR> </INDEX> 
-                                                                <INDEX> <VAR name = 4 /VAR> </INDEX> 
+                                                                <INDEX> 5 </INDEX> 
+                                                                <INDEX>  4  </INDEX> 
                                                                 </DIM> </VAR>
                                             EXIT </EQ> </CHECK>
                                 <DO>
@@ -220,8 +220,8 @@
                             </CONDITION>
                             <CONDITION> 
                                 <CHECK> <EQ> <VAR name =array <DIM> 
-                                                                <INDEX> <VAR name = 5 /VAR> </INDEX> 
-                                                                <INDEX> <VAR name = 4 /VAR> </INDEX> 
+                                                                <INDEX>  5 </INDEX> 
+                                                                <INDEX> 4  </INDEX> 
                                                                 </DIM> </VAR>
                                             WALL </EQ> </CHECK>
                                 <DO>
@@ -328,7 +328,7 @@
                         <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
                     </DO>
                 </CONDITION>
-                <CONDITION> <CHECK> <EQ> <NOT> <VAR name = n /VAR> 0 </EQ> </NOT> </CHECK>
+                <CONDITION> <CHECK> <NOT> <EQ>  <VAR name = n /VAR> 0 </EQ> </NOT> </CHECK>
                     <DO> 
                         <ASSIGN> <VALUE>  <SENDDRONS> 1 </SENDDRONS> </VALUE> <TO>  <VAR name = array /VAR> </TO> </ASSIGN>
                         <WHILE> 
@@ -365,8 +365,8 @@
                         <SWITCH>
                             <CONDITION> 
                                 <CHECK> <EQ> <VAR name =array <DIM> 
-                                                                <INDEX> <VAR name = 6 /VAR> </INDEX> 
-                                                                <INDEX> <VAR name = 5 /VAR> </INDEX> 
+                                                                <INDEX>  6  </INDEX> 
+                                                                <INDEX> 5  </INDEX> 
                                                                 </DIM> </VAR>
                                             EMPTY </EQ> </CHECK>
                                 <DO>
@@ -376,21 +376,21 @@
                             </CONDITION>
                             <CONDITION> 
                                 <CHECK> <EQ> <VAR name =array <DIM> 
-                                                                <INDEX> <VAR name = 6 /VAR> </INDEX> 
-                                                                <INDEX> <VAR name = 5 /VAR> </INDEX> 
+                                                                <INDEX>  6  </INDEX> 
+                                                                <INDEX>  5 </INDEX> 
                                                                 </DIM> </VAR>
                                             EXIT </EQ> </CHECK>
                                 <DO>
                                     <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
                                     <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = run /VAR> </TO> </ASSIGN>
                                     <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
-                                    <UP> 1</UP>
+                                    <RIGHT> 1</RIGHT>
                                 </DO>
                             </CONDITION>
                             <CONDITION> 
                                 <CHECK> <EQ> <VAR name =array <DIM> 
-                                                                <INDEX> <VAR name = 6 /VAR> </INDEX> 
-                                                                <INDEX> <VAR name = 5 /VAR> </INDEX> 
+                                                                <INDEX> 6  </INDEX> 
+                                                                <INDEX>  5  </INDEX> 
                                                                 </DIM> </VAR>
                                             WALL </EQ> </CHECK>
                                 <DO>
@@ -409,7 +409,7 @@
         <SWITCH>
             <CONDITION> <CHECK> <EQ> <VAR name =map <DIM> 
                                                             <INDEX> <VAR name = x /VAR> </INDEX> 
-                                                            <INDEX> <ADD> <VAR name = y /VAR> 1 <?ADD> </INDEX> 
+                                                            <INDEX> <ADD> <VAR name = y /VAR> 1 </ADD> </INDEX> 
                                                         </DIM> </VAR>
                                                         0 </EQ> </CHECK>
                     <DO>
@@ -497,7 +497,7 @@
                         <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
                     </DO>
                 </CONDITION>
-                <CONDITION> <CHECK> <EQ> <NOT> <VAR name = n /VAR> 0 </EQ> </NOT> </CHECK>
+                <CONDITION> <CHECK> <NOT>  <EQ>  <VAR name = n /VAR> 0 </EQ> </NOT> </CHECK>
                     <DO> 
                         <ASSIGN> <VALUE>  <SENDDRONS> 1 </SENDDRONS> </VALUE> <TO>  <VAR name = array /VAR> </TO> </ASSIGN>
                         <WHILE> 
@@ -534,8 +534,8 @@
                         <SWITCH>
                             <CONDITION> 
                                 <CHECK> <EQ> <VAR name =array <DIM> 
-                                                                <INDEX> <VAR name = 5 /VAR> </INDEX> 
-                                                                <INDEX> <VAR name = 6 /VAR> </INDEX> 
+                                                                <INDEX> 5 </INDEX> 
+                                                                <INDEX> 6 </INDEX> 
                                                                 </DIM> </VAR>
                                             EMPTY </EQ> </CHECK>
                                 <DO>
@@ -545,21 +545,21 @@
                             </CONDITION>
                             <CONDITION> 
                                 <CHECK> <EQ> <VAR name =array <DIM> 
-                                                                <INDEX> <VAR name = 5 /VAR> </INDEX> 
-                                                                <INDEX> <VAR name = 6 /VAR> </INDEX> 
+                                                                <INDEX> 5  </INDEX> 
+                                                                <INDEX>  6  </INDEX> 
                                                                 </DIM> </VAR>
                                             EXIT </EQ> </CHECK>
                                 <DO>
                                     <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
                                     <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = run /VAR> </TO> </ASSIGN>
                                     <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
-                                    <UP> 1</UP>
+                                    <DOWN> 1</DOWN>
                                 </DO>
                             </CONDITION>
                             <CONDITION> 
                                 <CHECK> <EQ> <VAR name =array <DIM> 
-                                                                <INDEX> <VAR name = 5 /VAR> </INDEX> 
-                                                                <INDEX> <VAR name = 6 /VAR> </INDEX> 
+                                                                <INDEX>  5  </INDEX> 
+                                                                <INDEX> 6 </INDEX> 
                                                                 </DIM> </VAR>
                                             WALL </EQ> </CHECK>
                                 <DO>
@@ -578,7 +578,7 @@
         <SWITCH>
             <CONDITION> <CHECK> <EQ> <VAR name =map <DIM> 
                                                             <INDEX> <ADD> <VAR name = y /VAR> -1 </ADD> </INDEX> 
-                                                            <INDEX> <VAR name = y /VAR> 0  </INDEX> 
+                                                            <INDEX> <VAR name = y /VAR>   </INDEX> 
                                                         </DIM> </VAR>
                                                         0 </EQ> </CHECK>
                     <DO>
@@ -611,7 +611,7 @@
                                                                 </DIM> </VAR>
                                                 </TO> 
                                 </ASSIGN>
-                                <ASSIGN> <VALUE>  <ADD> <VAR name = y /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = y /VAR> </TO> </ASSIGN>
+                                <ASSIGN> <VALUE>  <ADD> <VAR name = x /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = y /VAR> </TO> </ASSIGN>
                                 <RIGHT> 1 </RIGHT>
                             </DO>
                         </CONDITION> </SWITCH>
@@ -666,7 +666,7 @@
                         <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
                     </DO>
                 </CONDITION>
-                <CONDITION> <CHECK> <EQ> <NOT> <VAR name = n /VAR> 0 </EQ> </NOT> </CHECK>
+                <CONDITION> <CHECK> <NOT>  <EQ>  <VAR name = n /VAR> 0 </EQ> </NOT> </CHECK>
                     <DO> 
                         <ASSIGN> <VALUE>  <SENDDRONS> 1 </SENDDRONS> </VALUE> <TO>  <VAR name = array /VAR> </TO> </ASSIGN>
                         <WHILE> 
@@ -703,8 +703,8 @@
                         <SWITCH>
                             <CONDITION> 
                                 <CHECK> <EQ> <VAR name =array <DIM> 
-                                                                <INDEX> <VAR name = 4 /VAR> </INDEX> 
-                                                                <INDEX> <VAR name = 5 /VAR> </INDEX> 
+                                                                <INDEX> 4 </INDEX> 
+                                                                <INDEX>  5  </INDEX> 
                                                                 </DIM> </VAR>
                                             EMPTY </EQ> </CHECK>
                                 <DO>
@@ -714,21 +714,21 @@
                             </CONDITION>
                             <CONDITION> 
                                 <CHECK> <EQ> <VAR name =array <DIM> 
-                                                                <INDEX> <VAR name = 4 /VAR> </INDEX> 
-                                                                <INDEX> <VAR name = 5 /VAR> </INDEX> 
+                                                                <INDEX>  4  </INDEX> 
+                                                                <INDEX>  5  </INDEX> 
                                                                 </DIM> </VAR>
                                             EXIT </EQ> </CHECK>
                                 <DO>
                                     <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
                                     <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = run /VAR> </TO> </ASSIGN>
                                     <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
-                                    <UP> 1</UP>
+                                    <LEFT> 1</LEFT>
                                 </DO>
                             </CONDITION>
                             <CONDITION> 
                                 <CHECK> <EQ> <VAR name =array <DIM> 
-                                                                <INDEX> <VAR name = 4 /VAR> </INDEX> 
-                                                                <INDEX> <VAR name = 5 /VAR> </INDEX> 
+                                                                <INDEX> 4 </INDEX> 
+                                                                <INDEX>   5  </INDEX> 
                                                                 </DIM> </VAR>
                                             WALL </EQ> </CHECK>
                                 <DO>
