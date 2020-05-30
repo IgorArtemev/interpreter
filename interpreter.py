@@ -4,23 +4,41 @@ import random
 import robot
 from typing import List, Optional, Union
 
+def set_list(value,index,n,i):
+    if not isinstance(value[0], list):
+        value[index[i]]=n
+        return value
+    value[index[i]]=set_list(value[index[i]],index,n,i+1)
+    return value
+
 class Variable:
 	#перегрузка операторов:
-	def __init__(self, symtype='var', value=None, const_flag=False):
+	def __init__(self, symtype='var', value=None, const_flag=False, dim=0,dims=[]):
 		self.type = symtype
 		self.value = value
 		self.const_flag = const_flag
-        
+		self.dim=dim
+		self.dims=dims
+	
+	def get_value(self,index):
+		a=self.value
+		for i in index:
+			a=a[i]
+		return a
+		
+	def set_value(self,index, n):
+		self.value=set_list(self.value,index,n,0)
+		
 	def __repr__(self):
 		if self.type == 'BOOL':
 			if self.value is True:
 				self.value = 'TRUE'
 			else:
 				self.value = 'FALSE'
-		return f'{self.type}, {self.value}, {self.const_flag}'
+		return f'{self.type}, {self.value}, {self.const_flag}, {self.dim}, {self.dims}'
 
 	def __deepcopy__(self, memodict={}):
-		return Var(self.type, self.value, self.const_flag)
+		return Variable(self.type, self.value, self.const_flag, self.dim, self.dims)
 	
 	def __lt__(self, other):
 		if self.value < other.value:
@@ -108,6 +126,14 @@ class Interpreter:
 				self.interpreter_node(child)
 		elif node.type == 'assignment':
 			self.assignment(node)
+		elif node.type == 'dimensions':
+			dimensions = []
+			for child in node.children:
+				var = self.interpreter_node(child)
+				if var is not None:
+					dimensions.extend(var)
+				else: return None
+			return dimensions
 		elif node.type == 'variables':
 			variables = []
 			for child in node.children:
@@ -119,6 +145,10 @@ class Interpreter:
 		elif node.type == 'variable':
 			name = node.value.value
 			return self.find_variable(name)
+		elif node.type == 'variable_array':
+			name = node.value.value
+			index=self.interpreter_node(node.children)
+			return self.find_variable_in_array(name,index)
 		elif node.type == 'const':
 			value = node.value
 			if isinstance(value, int):
@@ -195,18 +225,29 @@ class Interpreter:
 			sys.stderr.write(f'error: incorrect expression in assignment\n')
 			return 
 		#проверить отдельно для присваивания всего массива
-		if isinstance(expression,list):
-			expression = expression[0]
-		for var in variables:
-			if var.const_flag is True:
-				sys.stderr.write(f'error: cannot reinitialize the constant\n')
-				return
-			conversed_var = self.type_conversion(var, expression)
-			if conversed_var is None: 
-				sys.stderr.write(f'error: assignment error\n')
-				return
-			var.type = conversed_var.type
-			var.value = conversed_var.value
+		if expression.dim ==0:
+			if isinstance(expression,list):
+					expression = expression[0]
+			for var in variables:
+				if var.const_flag is True:
+					sys.stderr.write(f'error: cannot reinitialize the constant\n')
+					return
+				conversed_var = self.type_conversion(var, expression)
+				if conversed_var is None: 
+					sys.stderr.write(f'error: assignment error\n')
+					return
+				var.type = conversed_var.type
+				var.value = conversed_var.value
+		else: #массив
+			for var in variables:
+				if var.const_flag is True:
+					sys.stderr.write(f'error: cannot reinitialize the constant\n')
+					return
+				if var.dims != expression.dims:
+					sys.stderr.write(f'error: incorect size of array\n')
+					return
+				var.value=expression.value
+			
 	
 	def find_variable(self, name):
 		if name in self.symbol_table[0].keys():
