@@ -12,7 +12,6 @@ def set_list(value,index,n,i):
     return value
 
 class Variable:
-	#перегрузка операторов:
 	def __init__(self, symtype='var', value=None, const_flag=False, dim=0,dims=[]):
 		self.type = symtype
 		self.value = value
@@ -109,17 +108,14 @@ class Interpreter:
 				self.symbol_table[self.scope][name] = Variable(node.value.value, None, False)
 		elif (node.type == 'declaration_var_init'):
 			self.initialization(node, False)
-		elif (node.type == 'declaration_var_const'): # можно ли константы задавать другими переменными?
+		elif (node.type == 'declaration_var_const'): 
 			self.initialization(node, True)
 		elif node.type == 'function':
 			if node.value.value not in self.functions.keys():
-				self.functions[node.value.value] = node.children #занесли в словарь имя функции : statements
-				#self.interpreter_node(node.children)              
+				self.functions[node.value.value] = node.children           
 			else:                                                        
 				sys.stderr.write(f'error: redeclaration of function {node.value.value}\n')
-		#надо сделать штуку для глобальных переменных, например нулевой scope
-		#переделать: в function не интерпретировать, интерпретировать в CALL и в main
-		elif node.type == 'function_call': # можно ли вызывать main?
+		elif node.type == 'function_call':
 			self.function_call(node)
 		elif node.type == 'statements':
 			for child in node.children:
@@ -160,7 +156,7 @@ class Interpreter:
 			else:
 				return Variable('CELL', value, True) #EMPTY/WALL/EXIT/UNDEF
 		elif node.type == 'expressions':
-			expressions = [] #можно этот код в функцию вынести
+			expressions = [] 
 			for child in node.children:
 				expr = self.interpreter_node(child)
 				if expr is not None:
@@ -216,7 +212,6 @@ class Interpreter:
 				
 	def assignment(self, node: parser.SyntaxTreeNode): 
 		variables = self.interpreter_node(node.children[1])
-		# не очень понимаю, за счёт чего тут меняются элементы таблицы символов...
 		if variables is None:
 			sys.stderr.write(f'error: incorrect variables in assignment\n')
 			return
@@ -224,7 +219,6 @@ class Interpreter:
 		if expression is None:
 			sys.stderr.write(f'error: incorrect expression in assignment\n')
 			return 
-		#проверить отдельно для присваивания всего массива
 		if expression.dim ==0:
 			if isinstance(expression,list):
 					expression = expression[0]
