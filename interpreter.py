@@ -1,15 +1,163 @@
 import sys
 import parser
 import random
-import robot
 from typing import List, Optional, Union
+class Cell:
+    def __init__(self, x, y, type):
+        self.x = x
+        self.y = y
+        self.type = type
 
-def set_list(value,index,n,i):
-    if not isinstance(value[0], list):
-        value[index[i]]=n
-        return value
-    value[index[i]]=set_list(value[index[i]],index,n,i+1)
-    return value
+class Robot:
+	def __init__(self, file, drons = 100):
+		self.life = True
+		s = file.readline()
+		b=[]
+		self.x=int(s[0])
+		self.y=int(s[2])
+		c=file.read()
+		b=c.split('\n')
+		for i in range(len(b)):
+            b[i]=[int(j) for j in b[0]]
+		self.map =b
+		self.drons = drons
+        
+	def show_map(self):
+		for i in range(len(self.map)):
+			for j in range(len(self.map[0])):
+				if i == self.x and j == self.y:
+					print("0", end='') #Robot
+				elif self.map[i][j] == 1: #Wall
+					print("*", end='')	
+				elif self.map[i][j]  ==3: #Exit
+					print("X", end='')
+				else:          #Empty
+					print(" ", end='')			
+			print()
+			
+	def up(self, n):
+		for i in range(n):
+			if self.life:
+				self.x-=1
+				if self.x<0 or self.x>=len(self.map):
+					self.life=False
+				elif self.map[self.x][self.y] == 1:
+					self.life=False
+		self.show_map()
+
+	def down(self, n):
+		for i in range(n):
+			if self.life:
+				self.x+=1
+				if self.x<0 or self.x>=len(self.map):
+					self.life=False
+				elif self.map[self.x][self.y] == 1:
+					self.life=False
+		self.show_map()
+
+	def left(self, n):
+		for i in range(n):
+			if self.life:
+				self.y-=1
+				if self.y<0 or self.y>=len(self.map[0]):
+					self.life=False
+				if self.map[self.x][self.y] == 1:
+					self.life=False
+		self.show_map()
+
+	def right(self, n):
+		for i in range(n):
+			if self.life:
+				self.y+=1
+				if self.y<0 or self.y>=len(self.map[0]):
+					self.life=False
+				if self.map[self.x][self.y] == 1:
+					self.life=False
+		self.show_map()
+
+	def drons_count(self):
+		return self.drons
+    
+	def send_drons(self, n):
+		self.drons-=n
+		new_map=[]
+		array=[0]*121
+		for i in range(n):
+			a=Satellite(self.x, self.y, self.map)
+			new_map.append(a.exploring())    
+		for cell in new_map:
+			a=cell.x-self.x+5
+            b=cell.y-self.y+5
+            array[a*len(self.map[0])+b]=cell.type
+		return array
+        
+        
+
+    
+class Satellite:
+	def __init__(self, x, y, _map):
+		self.life = True
+		self.x = x
+		self.y = y
+		self.map = _map
+		self.new_map = []
+
+	def up(self):
+		self.x-=1
+		if (self.x<0 or self.x>=len(self.map)):
+			self.life=False
+			self.new_map.append(Cell(self.x,self.y,1))
+		else:
+			if self.map[self.x][self.y] == 1:
+				self.life=False
+			self.new_map.append(Cell(self.x,self.y,self.map[self.x][self.y]))
+
+	def down(self):
+		self.x+=1
+		if (self.x<0 or self.x>=len(self.map)):
+			self.life=False
+			self.new_map.append(Cell(self.x,self.y,1))
+		else:
+			if self.map[self.x][self.y] == 1:
+				self.life=False
+			self.new_map.append(Cell(self.x,self.y,self.map[self.x][self.y]))
+
+	def left(self):
+		self.y-=1
+		if (self.y<0 or self.y>=len(self.map)):
+			self.life=False
+			self.new_map.append(Cell(self.x,self.y,1))
+		else:
+			if self.map[self.x][self.y] == 1:
+				self.life=False
+			self.new_map.append(Cell(self.x,self.y,self.map[self.x][self.y]))
+
+	def right(self):
+		self.y+=1
+		if (self.y<0 or self.y>=len(self.map)):
+			self.life=False
+			self.new_map.append(Cell(self.x,self.y,1))
+		else:
+			if self.map[self.x][self.y] == 1:
+				self.life=False
+			self.new_map.append(Cell(self.x,self.y,self.map[self.x][self.y]))
+
+	def exploring(self):
+		steps=random.randint(1,5)
+		for i in range(steps):
+			if self.life:
+				step=random.randint(1,4)
+				if step == 1:
+					self.up()
+				elif step == 2:
+					self.up()
+				elif step == 3:
+					self.left()
+				else:
+					self.right()
+			else:
+				break
+		return self.new_map
 
 class Variable:
 	def __init__(self, symtype='var', value=None, const_flag=False, dim=0,dims=[]):
@@ -20,13 +168,20 @@ class Variable:
 		self.dims=dims
 	
 	def get_value(self,index):
-		a=self.value
-		for i in index:
-			a=a[i]
-		return a
-		
-	def set_value(self,index, n):
-		self.value=set_list(self.value,index,n,0)
+		n=0
+		s=len(self.value)
+		for i in range(len(index)):
+			s/=self.dims[i]
+			n+=index[i]*s		
+		return self.value[n]
+
+	def set_value(self,index, a):
+		n=0
+		s=len(self.value)
+		for i in range(len(index)):
+			s/=self.dims[i]
+			n+=index[i]*s		
+		self.value[n]=a
 		
 	def __repr__(self):
 		if self.type == 'BOOL':
@@ -110,6 +265,19 @@ class Interpreter:
 			self.initialization(node, False)
 		elif (node.type == 'declaration_var_const'): 
 			self.initialization(node, True)
+		elif (node.type == 'declaration_array'): # можно ли константы задавать другими переменными?
+			name = node.children[0].value
+			dim =self.interpreter_node(node.children[1]).value
+			dims =self.interpreter_node(node.children[2])
+			if (name in self.symbol_table[self.scope].keys()) or (name in self.symbol_table[0].keys()):
+				sys.stderr.write(f'error: redeclaration of variable {name}\n')
+				return
+			else:
+				self.symbol_table[self.scope][name] = Variable(node.value.value, None, False,dim,dims)
+		elif (node.type == 'declaration_array_init'): # можно ли константы задавать другими переменными?
+			self.array_initialization(node, False)
+		elif (node.type == 'declaration_array_init'): # можно ли константы задавать другими переменными?
+			self.array_initialization(node, True)
 		elif node.type == 'function':
 			if node.value.value not in self.functions.keys():
 				self.functions[node.value.value] = node.children           
@@ -122,6 +290,14 @@ class Interpreter:
 				self.interpreter_node(child)
 		elif node.type == 'assignment':
 			self.assignment(node)
+		elif node.type == 'dimension':
+			expr = self.interpreter_node(node.children) # проверить, не массив ли
+			if isinstance(expr,list):
+				expr = expr[0]
+			if expr.type == 'CELL':
+				sys.stderr.write(f'error: cannot convert CELL to INT to get the dimensions count\n')
+				return
+			return [expr.value]	
 		elif node.type == 'dimensions':
 			dimensions = []
 			for child in node.children:
@@ -130,6 +306,19 @@ class Interpreter:
 					dimensions.extend(var)
 				else: return None
 			return dimensions
+		elif node.type == 'values':
+			values = []
+			for child in node.children:
+				var = self.interpreter_node(child)
+				if var is not None:
+					values.extend(var)
+				else: return None
+			return values
+		elif node.type == 'value':
+			expr = self.interpreter_node(node.children)  # проверить, не массив ли
+			if isinstance(expr,list):
+				expr = expr[0]
+			return [expr]	
 		elif node.type == 'variables':
 			variables = []
 			for child in node.children:
@@ -249,7 +438,20 @@ class Interpreter:
 		if name in self.symbol_table[self.scope].keys():
 			return [self.symbol_table[self.scope][name]]
 		sys.stderr.write(f'error: undeclarated variable {name}\n')
-	
+
+	def find_variable_in_array(self, name, indexes):
+		if name in self.symbol_table[0].keys():
+			a=self.symbol_table[0][name]
+		if name in self.symbol_table[self.scope].keys():
+			a=self.symbol_table[self.scope][name]
+		else:
+			sys.stderr.write(f'error: undeclarated variable {name}\n')
+			return 
+		if len(indexes) != a.dim:
+			sys.stderr.write(f'error: incorect count of indexes {name}\n')
+			return 
+		b=a.get_value(indexes)
+		return Variable(a.type, b, True)
 	def bool_to_int(self, var: Variable):
 		var.type = 'INT'
 		if var.value is True:
@@ -293,7 +495,34 @@ class Interpreter:
 			sys.stderr.write(f'error: initialization error of variable {name}\n')
 			return 
 		self.symbol_table[self.scope][name] = var
-				
+
+	def array_initialization(self, node: parser.SyntaxTreeNode, flag: bool):
+		vartype = node.value.value
+		name = node.children[0].value
+		if (name in self.symbol_table[self.scope].keys()) or (name in self.symbol_table[0].keys()):
+			sys.stderr.write(f'error: redeclaration of variable {name}\n')
+			return
+		dimvar = self.interpreter_node(node.children[1]) #проверять, нет ли в этих expressions обращений к массиввам
+		if dimvar.type == 'CELL':
+			sys.stderr.write(f'error: cannot convert CELL to INT to get the dimensions count\n')
+			return
+		dim = dimvar.value
+		dimensions = self.interpreter_node(node.children[2])
+		if len(dimensions)!=dim:
+			sys.stderr.write(f'error: redeclaration of variable {name}\n')
+			return
+		values = self.interpreter_node(node.children[3])
+		for value in values:
+			value = self.type_conversion(Variable(vartype, None, flag), value)
+			if value is None: 
+				sys.stderr.write(f'error: initialization error of variable {name}\n')
+				return
+			value = value.value	
+		var=Variable(vartype,values,flag,dim,dimensions)
+		if var is None: 
+			sys.stderr.write(f'error: initialization error of variable {name}\n')
+			return 
+		self.symbol_table[self.scope][name] = var		
 	def addition(self, op: parser.SyntaxTreeNode):
 		expressions = self.interpreter_node(op)
 		if (expressions is None): # or (len(expressions) < 2)
@@ -427,7 +656,7 @@ class Interpreter:
 		
 if __name__ == '__main__':
 	interpreter = Interpreter()
-	f=open('test_math','r')
+	f=open('test_sorting','r')
 	interpreter.interpreter(f.read())
 	f.close()
 	interpreter.print_symbol()
