@@ -1,4 +1,5 @@
 import sys
+import copy
 import parser
 import random
 from typing import List, Optional, Union
@@ -9,7 +10,7 @@ class Cell:
         self.type = type
 
 class Robot:
-	def __init__(self, file, drons = 1000):
+	def __init__(self, file, drons = 10):
 		self.life = True
 		s = file.readline()
 		b=[]
@@ -76,6 +77,7 @@ class Robot:
 		self.show_map()
 
 	def drons_count(self):
+		print(self.drons)
 		return self.drons
     
 	def send_drons(self, n):
@@ -89,7 +91,7 @@ class Robot:
 			for cell in row:
 				a=cell.x-self.x+5
 				b=cell.y-self.y+5
-				array[a*len(self.map[0])+b]=cell.type
+				array[a*11+b]=cell.type
 		return array
         
         
@@ -102,7 +104,18 @@ class Satellite:
 		self.y = y
 		self.map = _map
 		self.new_map = []
-
+	def show_map(self):
+		for i in range(len(self.map)):
+			for j in range(len(self.map[0])):
+				if i == self.x and j == self.y:
+					print("0", end='') #Robot
+				elif self.map[i][j] == 1: #Wall
+					print("*", end='')	
+				elif self.map[i][j]  ==3: #Exit
+					print("X", end='')
+				else:          #Empty
+					print(" ", end='')			
+			print()
 	def up(self):
 		self.x-=1
 		if (self.x<0 or self.x>=len(self.map)):
@@ -112,7 +125,7 @@ class Satellite:
 			if self.map[self.x][self.y] == 1:
 				self.life=False
 			self.new_map.append(Cell(self.x,self.y,self.map[self.x][self.y]))
-
+		self.show_map()
 	def down(self):
 		self.x+=1
 		if (self.x<0 or self.x>=len(self.map)):
@@ -122,7 +135,7 @@ class Satellite:
 			if self.map[self.x][self.y] == 1:
 				self.life=False
 			self.new_map.append(Cell(self.x,self.y,self.map[self.x][self.y]))
-
+		self.show_map()
 	def left(self):
 		self.y-=1
 		if (self.y<0 or self.y>=len(self.map)):
@@ -132,7 +145,7 @@ class Satellite:
 			if self.map[self.x][self.y] == 1:
 				self.life=False
 			self.new_map.append(Cell(self.x,self.y,self.map[self.x][self.y]))
-
+		self.show_map()
 	def right(self):
 		self.y+=1
 		if (self.y<0 or self.y>=len(self.map)):
@@ -142,7 +155,7 @@ class Satellite:
 			if self.map[self.x][self.y] == 1:
 				self.life=False
 			self.new_map.append(Cell(self.x,self.y,self.map[self.x][self.y]))
-
+		self.show_map()
 	def exploring(self):
 		steps=random.randint(1,5)
 		for i in range(steps):
@@ -230,7 +243,7 @@ class Interpreter:
 			#self.interpreter_tree(self.tree)
 			self.interpreter_node(self.tree)
 			if 'main' not in self.functions.keys():
-				sys.stderr.write(f'error: no main function\n')
+				sys.stderr.write(f'error: no main function\n ')
 				return
 			else:
 				self.scope=1
@@ -306,6 +319,7 @@ class Interpreter:
 		elif node.type == 'variable':
 			#print(node.lineno)
 			name = node.value.value
+			##print(name)
 			return self.find_variable(name)
 		elif node.type == 'variable_array':
 			#print(node.lineno)
@@ -447,11 +461,12 @@ class Interpreter:
 			#print(node.lineno)
 			n=self.interpreter_node(node.children)
 			array=self.robot.send_drons(n.value)
-			#print(array)
+			print(array)
 			cells=[]
+			a=['UNDEF','WALL','EMPTY','EXIT']
 			for i in array:
-				cells.append(Variable('CELL', i, False))
-			#print(cells)
+				cells.append(Variable('CELL', a[i], False))
+			print(cells)
 			return Variable('CELL', cells, True, 2, [11,11])
 
 	def assignment(self, node: parser.SyntaxTreeNode): 
@@ -489,7 +504,7 @@ class Interpreter:
 					sys.stderr.write(f'error: different sizes of arrays in assignment\n')
 					return
 				#преобразование типов для массивов
-				var.value = expression.value
+				var.value = copy.deepcopy(expression.value)
 		else:
 			sys.stderr.write(f'error: cannot assign array to not array and vice versa(i naoborot)\n')
 			return
@@ -507,6 +522,8 @@ class Interpreter:
 			sys.stderr.write(f'error: variable {name} is not an array\n')
 			return
 		i = var[0].index_recount(indexes)
+		if var[0].const_flag is True:
+			var[0].value[i].const_flag=True
 		return [var[0].value[i]]
 	
 	def bool_to_int(self, var: Variable):#для массивов сделать
@@ -568,7 +585,10 @@ class Interpreter:
 		size=1
 		for i in dimensions:
 			size*=i
-		self.symbol_table[self.scope][name] = Variable(vartype, [Variable(vartype, None, flag)]*size, flag, dim, dimensions)
+		values=[]
+		for i in range(size):
+			values.append(Variable(vartype, None, flag))
+		self.symbol_table[self.scope][name] = Variable(vartype, values, flag, dim, dimensions)
 		
 	def array_initialization(self, node: parser.SyntaxTreeNode, flag: bool):
 		vartype = node.value.value
@@ -584,7 +604,7 @@ class Interpreter:
 			return
 		values = self.interpreter_node(node.children[3])
 		for i in range(len(values)):
-			values[i] = self.type_conversion(Variable(vartype, None, flag), values[i])
+			values[i] = self.type_conversion(Variable(vartype, None, False), values[i])
 			if values[i] is None: 
 				sys.stderr.write(f'error: initialization error of variable {name}\n')
 				return
