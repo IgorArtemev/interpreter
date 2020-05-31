@@ -13,7 +13,7 @@
         </VAR>
         <VAR = tmp>
             <TYPE> BOOL </TYPE>
-            <VALUE> TRUE </VALUE>
+            <VALUE> FALSE </VALUE>
         </VAR>
         <VAR = x>
             <TYPE> INT </TYPE>
@@ -58,7 +58,12 @@
                 <ASSIGN> <VALUE>  <ADD> <VAR name = i /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = i /VAR> </TO> </ASSIGN>
             </DO>
         </WHILE>
-        
+        <ASSIGN> <VALUE> 1 </VALUE> <TO> <VAR name =map  > <DIM> 
+                                                                            <INDEX> <VAR name = x /VAR> </INDEX> 
+                                                                            <INDEX> <VAR name = y /VAR> </INDEX> 
+                                                                        </DIM> </VAR>
+                                                    </TO>
+        </ASSIGN>
         <CALL> top_search </CALL>
         <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
             <DO> <CALL> right_search </CALL> </DO>
@@ -71,6 +76,7 @@
         </CONDITION> </SWITCH>
     </FUNC>
     <FUNC name = top_search>
+        <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
         <SWITCH>
             <CONDITION> <CHECK> <EQ> <VAR name =map > <DIM> 
                                                             <INDEX> <ADD> <VAR name = x /VAR> -1 </ADD> </INDEX> 
@@ -205,7 +211,7 @@
                                                                 <INDEX> 4 </INDEX> 
                                                                 <INDEX>  5  </INDEX> 
                                                                 </DIM> </VAR>
-                                            EXIT </EQ> </CHECK>
+                                                                EXIT </EQ> </CHECK>
                                 <DO>
                                     <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
                                     <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = run /VAR> </TO> </ASSIGN>
