@@ -77,7 +77,6 @@ class Robot:
 		self.show_map()
 
 	def drons_count(self):
-		print(self.drons)
 		return self.drons
     
 	def send_drons(self, n):

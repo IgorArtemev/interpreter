@@ -311,14 +311,7 @@
                 <TYPE> BOOL </TYPE>
                 <VALUE> TRUE</VALUE>
             </VAR>
-            <VAR = i>
-                <TYPE> INT </TYPE>
-                <VALUE> 0 </VALUE>
-             </VAR>
-            <VAR = j>
-                <TYPE> INT </TYPE>
-                <VALUE> 0 </VALUE>
-            </VAR>
+           
         </VARDECLARATION>
         <WHILE> 
 			<CHECK>
@@ -483,14 +476,6 @@
                 <TYPE> BOOL </TYPE>
                 <VALUE> TRUE</VALUE>
             </VAR>
-            <VAR = i>
-                <TYPE> INT </TYPE>
-                <VALUE> 0 </VALUE>
-             </VAR>
-            <VAR = j>
-                <TYPE> INT </TYPE>
-                <VALUE> 0 </VALUE>
-            </VAR>
         </VARDECLARATION>
         <WHILE> 
 			<CHECK>
@@ -654,14 +639,6 @@
             <VAR = tmp2>
                 <TYPE> BOOL </TYPE>
                 <VALUE> TRUE</VALUE>
-            </VAR>
-            <VAR = i>
-                <TYPE> INT </TYPE>
-                <VALUE> 0 </VALUE>
-             </VAR>
-            <VAR = j>
-                <TYPE> INT </TYPE>
-                <VALUE> 0 </VALUE>
             </VAR>
         </VARDECLARATION>
         <WHILE> 
