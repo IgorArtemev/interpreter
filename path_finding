@@ -3,8 +3,8 @@
         <VAR = map>
 			<TYPE> INT </TYPE>
 			<DIMENSIONS count = 2>         
-				<DIMENSION> 21 </DIMENSION>
-                <DIMENSION> 21 </DIMENSION>
+				<DIMENSION> 51 </DIMENSION>
+                <DIMENSION> 51 </DIMENSION>
 			</DIMENSIONS> 
 		</VAR>
         <VAR = run>
@@ -17,11 +17,11 @@
         </VAR>
         <VAR = x>
             <TYPE> INT </TYPE>
-            <VALUE> 10 </VALUE>
+            <VALUE> 25 </VALUE>
         </VAR>
         <VAR = y>
             <TYPE> INT </TYPE>
-            <VALUE> 10 </VALUE>
+            <VALUE> 25 </VALUE>
         </VAR>
 
     </VARDECLARATION>
@@ -38,13 +38,13 @@
         </VARDECLARATION>
         <WHILE> 
 			<CHECK>
-                <NOT> <EQ> <VAR name = i /VAR>  21 </EQ> </NOT>
+                <NOT> <EQ> <VAR name = i /VAR>  51 </EQ> </NOT>
 			</CHECK>
 			<DO> 
                 <ASSIGN> <VALUE>  0 </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN>
                 <WHILE> 
 			        <CHECK>
-                        <NOT> <EQ> <VAR name = j /VAR>  21 </EQ> </NOT>
+                        <NOT> <EQ> <VAR name = j /VAR>  51 </EQ> </NOT>
 			        </CHECK>
                     <DO>   
                         <ASSIGN> <VALUE> 0 </VALUE> <TO> <VAR name =map  > <DIM> 
@@ -164,7 +164,7 @@
                 <CONDITION> <CHECK> <NOT> <EQ>  <VAR name = n /VAR> 0 </EQ> </NOT> </CHECK>
                     <DO> 
                         <ASSIGN> <VALUE>  <SENDDRONS> 1 </SENDDRONS> </VALUE> <TO>  <VAR name = array /VAR> </TO> </ASSIGN>
-                        <ASSIGN> <VALUE>  0 </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN>                        
+                        <ASSIGN> <VALUE>  0 </VALUE> <TO>  <VAR name = i /VAR> </TO> </ASSIGN>                        
                         <WHILE> 
 			                <CHECK>
                                 <NOT> <EQ> <VAR name = i /VAR>  11 </EQ> </NOT>
@@ -330,12 +330,13 @@
                 <CONDITION> <CHECK> <NOT> <EQ>  <VAR name = n /VAR> 0 </EQ> </NOT> </CHECK>
                     <DO> 
                         <ASSIGN> <VALUE>  <SENDDRONS> 1 </SENDDRONS> </VALUE> <TO>  <VAR name = array /VAR> </TO> </ASSIGN>
+                        <ASSIGN> <VALUE>  0 </VALUE> <TO>  <VAR name = i /VAR> </TO> </ASSIGN>
                         <WHILE> 
 			                <CHECK>
                                 <NOT> <EQ> <VAR name = i /VAR>  11 </EQ> </NOT>
 			                </CHECK>
 			                <DO> 
-                                                <ASSIGN> <VALUE>  0 </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN>
+                                <ASSIGN> <VALUE>  0 </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN>
                                 <WHILE> 
 			                        <CHECK>
                                         <NOT> <EQ> <VAR name = j /VAR>  11 </EQ> </NOT>
@@ -494,12 +495,13 @@
                 <CONDITION> <CHECK> <NOT>  <EQ>  <VAR name = n /VAR> 0 </EQ> </NOT> </CHECK>
                     <DO> 
                         <ASSIGN> <VALUE>  <SENDDRONS> 1 </SENDDRONS> </VALUE> <TO>  <VAR name = array /VAR> </TO> </ASSIGN>
+                        <ASSIGN> <VALUE>  0 </VALUE> <TO>  <VAR name = i /VAR> </TO> </ASSIGN>
                         <WHILE> 
 			                <CHECK>
                                 <NOT> <EQ> <VAR name = i /VAR>  11 </EQ> </NOT>
 			                </CHECK>
 			                <DO>
-                                                <ASSIGN> <VALUE>  0 </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN> 
+                                <ASSIGN> <VALUE>  0 </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN> 
                                 <WHILE> 
 			                        <CHECK>
                                         <NOT> <EQ> <VAR name = j /VAR>  11 </EQ> </NOT>
@@ -658,6 +660,7 @@
                 <CONDITION> <CHECK> <NOT>  <EQ>  <VAR name = n /VAR> 0 </EQ> </NOT> </CHECK>
                     <DO> 
                         <ASSIGN> <VALUE>  <SENDDRONS> 1 </SENDDRONS> </VALUE> <TO>  <VAR name = array /VAR> </TO> </ASSIGN>
+                        <ASSIGN> <VALUE>  0 </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN>
                         <WHILE> 
 			                <CHECK>
                                 <NOT> <EQ> <VAR name = i /VAR>  11 </EQ> </NOT>
