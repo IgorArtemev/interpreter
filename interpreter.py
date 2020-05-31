@@ -85,10 +85,11 @@ class Robot:
 		for i in range(n):
 			a=Satellite(self.x, self.y, self.map)
 			new_map.append(a.exploring())    
-		for cell in new_map:
-			a=cell.x-self.x+5
-			b=cell.y-self.y+5
-			array[a*len(self.map[0])+b]=cell.type
+		for row in new_map:
+			for cell in row:
+				a=cell.x-self.x+5
+				b=cell.y-self.y+5
+				array[a*len(self.map[0])+b]=cell.type
 		return array
         
         
@@ -245,40 +246,53 @@ class Interpreter:
 		if node is None:
 			return
 		if node.type == 'program':
+			print(node.lineno)
 			self.interpreter_node(node.children)
 		elif node.type == 'blocks' or node.type == 'conditions' or node.type == 'statements' or node.type == 'declarations':
+			print(node.lineno)
 			for child in node.children: 
 				self.interpreter_node(child)
 		elif node.type == 'vardeclaration' or node.type == 'switch':
+			print(node.lineno)
 			self.interpreter_node(node.children)
 		elif node.type == 'declaration_var':
 			name = node.children.value
+			print(node.lineno)
 			if (name in self.symbol_table[self.scope].keys()) or (name in self.symbol_table[0].keys()):
 				sys.stderr.write(f'error: redeclaration of variable {name}\n')
 				return
 			else:
 				self.symbol_table[self.scope][name] = Variable(node.value.value, None, False)
 		elif node.type == 'declaration_var_init':
+			print(node.lineno)
 			self.initialization(node, False)
 		elif node.type == 'declaration_var_const':
+			print(node.lineno)
 			self.initialization(node, True)
 		elif node.type == 'declaration_array':
+			print(node.lineno)
 			self.array_declaration(node, False)
 		elif node.type == 'declaration_array_init': 
+			print(node.lineno)
 			self.array_initialization(node, False)
 		elif node.type == 'declaration_array_const':
+			print(node.lineno)
 			self.array_initialization(node, True)
 		elif node.type == 'function':
+			print(node.lineno)
 			if node.value.value not in self.functions.keys():
 				self.functions[node.value.value] = node.children #занесли в словарь имя функции : statements
 				#self.interpreter_node(node.children)              
 			else:                                                        
 				sys.stderr.write(f'error: redeclaration of function {node.value.value}\n')
 		elif node.type == 'function_call': # можно ли вызывать main?
+			print(node.lineno)
 			self.function_call(node)
 		elif node.type == 'assignment':
+			print(node.lineno)
 			self.assignment(node)
 		elif node.type == 'variables' or node.type == 'dimensions' or node.type == 'indexes' or node.type == 'values': 
+			print(node.lineno)
 			variables = []
 			for child in node.children:
 				var = self.interpreter_node(child)
@@ -287,14 +301,17 @@ class Interpreter:
 				else: return None
 			return variables
 		elif node.type == 'variable':
+			print(node.lineno)
 			name = node.value.value
 			return self.find_variable(name)
 		elif node.type == 'variable_array':
+			print(node.lineno)
 			name = node.value.value
 			indexes = self.interpreter_node(node.children)
 			return self.find_elem_of_array(name, indexes)
 		elif node.type == 'const':
 			value = node.value
+			print(node.lineno)
 			if isinstance(value, int):
 				return Variable('INT', value, True)
 			elif value == 'FALSE':
@@ -304,6 +321,7 @@ class Interpreter:
 			else:
 				return Variable('CELL', value, True) #EMPTY/WALL/EXIT/UNDEF
 		elif node.type == 'expressions':
+			print(node.lineno)
 			expressions = [] 
 			for child in node.children:
 				expr = self.interpreter_node(child)
@@ -315,6 +333,7 @@ class Interpreter:
 				else: return None
 			return expressions #проверить не может ли вернуться пустой список
 		elif node.type == 'dimension':
+			print(node.lineno)
 			expr = self.interpreter_node(node.children)
 			if isinstance(expr,list):
 				expr = expr[0]
@@ -326,6 +345,7 @@ class Interpreter:
 				return
 			return [int(expr.value)]
 		elif node.type == 'index':
+			print(node.lineno)
 			expr = self.interpreter_node(node.children) 
 			if isinstance(expr,list):
 				expr = expr[0]
@@ -337,6 +357,7 @@ class Interpreter:
 				return
 			return [int(expr.value)]
 		elif node.type == 'value':
+			print(node.lineno)
 			expr = self.interpreter_node(node.children)
 			if isinstance(expr,list):
 				expr = expr[0]
@@ -345,29 +366,36 @@ class Interpreter:
 				return
 			return [expr]	
 		elif node.type == 'condition':
+			print(node.lineno)
 			condition = self.interpreter_node(node.children['condition'])
+			if isinstance(condition,list):
+				condition = condition[0]
 			if condition.type == 'CELL':
 				sys.stderr.write(f'error: cannot convert CELL to BOOL to check a condition\n')
 				return
 			if condition.dim != 0:
 				sys.stderr.write(f'error: array cannot be condition\n')
 				return
-			if condition.value is True:
+			if bool(condition.value) is True:
 				self.interpreter_node(node.children['body'])
 		elif node.type == 'while':
+			print(node.lineno)
 			while True:
 				condition = self.interpreter_node(node.children['condition'])
+				if isinstance(condition,list):
+					condition = condition[0]
 				if condition.type == 'CELL':
 					sys.stderr.write(f'error: cannot convert CELL to BOOL to check a condition\n')
 					return
 				if condition.dim != 0:
 					sys.stderr.write(f'error: array cannot be condition\n')
 					return
-				if condition.value is True:
+				if bool(condition.value) is True:
 					self.interpreter_node(node.children['body'])
 				else:
 					break
 		elif node.type == 'math': #проверять expression на немассивность
+			print(node.lineno)
 			if node.value == '<ADD>':
 				return self.addition(node.children)
 			elif node.value == '<MUL>':
@@ -389,28 +417,32 @@ class Interpreter:
 			elif node.value == '<NOT>':
 				return self.logic_not(node.children)
 		elif node.type == 'operator':
+			print(node.lineno)
 			if node.value == '<LEFT>':
 				n=self.interpreter_node(node.children)
-				self.robot.left(n)
+				self.robot.left(n.value)
 			elif node.value == '<RIGHT>':
 				n=self.interpreter_node(node.children)
-				self.robot.right(n)
+				self.robot.right(n.valu)
 			elif node.value == '<UP>':
 				n=self.interpreter_node(node.children)
-				self.robot.up(n)
+				self.robot.up(n.value)
 			elif node.value == '<DOWN>':
 				n=self.interpreter_node(node.children)
-				self.robot.down(n)
+				self.robot.down(n.value)
 			elif node.value == '<GETDRONSCOUNT>':
 				var = self.interpreter_node(node.children)
+				if isinstance(var,list):
+					var = var[0]
 				n=self.robot.drons_count()
 				if var.dim !=0 or var.type != 'INT':
 					sys.stderr.write(f'error: assignment error\n')
 					return
 				var.value=n
 		elif node.type == 'senddrons':
+			print(node.lineno)
 			n=self.interpreter_node(node.children)
-			array=self.robot.send_drons(n)
+			array=self.robot.send_drons(n.value)
 			return Variable('CELL', array, True, 2, [11,11])
 
 	def assignment(self, node: parser.SyntaxTreeNode): 
@@ -524,7 +556,10 @@ class Interpreter:
 		if dimensions is None or len(dimensions) != dim:
 			sys.stderr.write(f'error: DIMENSIONS count shoul be equal to number of DIMENSION blocks\n')
 			return
-		self.symbol_table[self.scope][name] = Variable(vartype, [Variable(vartype, None, flag)], flag, dim, dimensions)
+		size=1
+		for i in dimensions:
+			size*=i
+		self.symbol_table[self.scope][name] = Variable(vartype, [Variable(vartype, None, flag)]*size, flag, dim, dimensions)
 		
 	def array_initialization(self, node: parser.SyntaxTreeNode, flag: bool):
 		vartype = node.value.value
@@ -707,6 +742,7 @@ class Interpreter:
 			self.interpreter_node(statements)   
 		self.scope -= 1 #хз
 		self.symbol_table.pop()
+		print(self.scope)
 		
 	def print_symbol(self):
 		print(self.symbol_table)

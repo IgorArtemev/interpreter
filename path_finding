@@ -58,12 +58,7 @@
                 <ASSIGN> <VALUE>  <ADD> <VAR name = i /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = i /VAR> </TO> </ASSIGN>
             </DO>
         </WHILE>
-        <ASSIGN> <VALUE> 1 </VALUE> <TO> <VAR name =map  > <DIM> 
-                                                                            <INDEX> <VAR name = x /VAR> </INDEX> 
-                                                                            <INDEX> <VAR name = y /VAR> </INDEX> 
-                                                                        </DIM> </VAR>
-                                                    </TO> 
-        </ASSIGN>
+        
         <CALL> top_search </CALL>
         <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
             <DO> <CALL> right_search </CALL> </DO>
