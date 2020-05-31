@@ -10,7 +10,7 @@ class Cell:
         self.type = type
 
 class Robot:
-	def __init__(self, file, drons = 10):
+	def __init__(self, file, drons = 1000):
 		self.life = True
 		s = file.readline()
 		b=[]
@@ -125,7 +125,7 @@ class Satellite:
 			if self.map[self.x][self.y] == 1:
 				self.life=False
 			self.new_map.append(Cell(self.x,self.y,self.map[self.x][self.y]))
-		self.show_map()
+		#self.show_map()
 	def down(self):
 		self.x+=1
 		if (self.x<0 or self.x>=len(self.map)):
@@ -135,7 +135,7 @@ class Satellite:
 			if self.map[self.x][self.y] == 1:
 				self.life=False
 			self.new_map.append(Cell(self.x,self.y,self.map[self.x][self.y]))
-		self.show_map()
+		#self.show_map()
 	def left(self):
 		self.y-=1
 		if (self.y<0 or self.y>=len(self.map)):
@@ -145,7 +145,7 @@ class Satellite:
 			if self.map[self.x][self.y] == 1:
 				self.life=False
 			self.new_map.append(Cell(self.x,self.y,self.map[self.x][self.y]))
-		self.show_map()
+		#self.show_map()
 	def right(self):
 		self.y+=1
 		if (self.y<0 or self.y>=len(self.map)):
@@ -155,7 +155,7 @@ class Satellite:
 			if self.map[self.x][self.y] == 1:
 				self.life=False
 			self.new_map.append(Cell(self.x,self.y,self.map[self.x][self.y]))
-		self.show_map()
+		#self.show_map()
 	def exploring(self):
 		steps=random.randint(1,5)
 		for i in range(steps):
@@ -441,7 +441,7 @@ class Interpreter:
 				self.robot.left(n.value)
 			elif node.value == '<RIGHT>':
 				n=self.interpreter_node(node.children)
-				self.robot.right(n.valu)
+				self.robot.right(n.value)
 			elif node.value == '<UP>':
 				n=self.interpreter_node(node.children)
 				self.robot.up(n.value)
@@ -461,12 +461,12 @@ class Interpreter:
 			#print(node.lineno)
 			n=self.interpreter_node(node.children)
 			array=self.robot.send_drons(n.value)
-			print(array)
+			#print(array)
 			cells=[]
 			a=['UNDEF','WALL','EMPTY','EXIT']
 			for i in array:
 				cells.append(Variable('CELL', a[i], False))
-			print(cells)
+			#print(cells)
 			return Variable('CELL', cells, True, 2, [11,11])
 
 	def assignment(self, node: parser.SyntaxTreeNode): 
