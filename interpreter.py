@@ -233,7 +233,10 @@ class Interpreter:
 				sys.stderr.write(f'error: no main function\n')
 				return
 			else:
+				self.scope=1
+				self.symbol_table.append(dict())
 				self.interpreter_node(self.functions['main'])
+				
 		else:
 			sys.stderr.write(f'Can\'t intemperate this, incorrect syntax\n')
 
@@ -740,10 +743,10 @@ class Interpreter:
 		statements = self.functions[funcname]
 		if statements is not None:
 			self.interpreter_node(statements)   
-		self.scope -= 1 #хз
 		self.symbol_table.pop()
 		print(self.scope)
-		
+		self.scope -= 1
+		self.symbol_table.pop()
 	def print_symbol(self):
 		print(self.symbol_table)
 		

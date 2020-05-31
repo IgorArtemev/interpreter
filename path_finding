@@ -172,7 +172,7 @@
                                                                     <INDEX> <VAR name = i /VAR> </INDEX> 
                                                                     <INDEX> <VAR name = j /VAR> </INDEX> 
                                                                 </DIM> </VAR>
-                                                                 WALL </EQ> </CHECK>
+                                                                WALL </EQ> </CHECK>
                                         <DO>
                                         <ASSIGN> <VALUE> 2 </VALUE> <TO> <VAR name =map > <DIM> 
                                                                             <INDEX> <ADD> <VAR name = i /VAR> <VAR name = x /VAR> -5 </ADD> </INDEX> 
