@@ -115,7 +115,8 @@
                                                 </TO> 
                                 </ASSIGN>
                                 <ASSIGN> <VALUE>  <ADD> <VAR name = x /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = x /VAR> </TO> </ASSIGN>
-                                <DOWN> 1 </DOWN>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO>  <DOWN> 1 </DOWN>  </DO> </CONDITION> </SWITCH>
                             </DO>
                         </CONDITION> </SWITCH>
                     </DO>
@@ -278,7 +279,8 @@
                                                 </TO> 
                                 </ASSIGN>
                                 <ASSIGN> <VALUE>  <ADD> <VAR name = y /VAR> -1 </ADD> </VALUE> <TO>  <VAR name = y /VAR> </TO> </ASSIGN>
-                                <LEFT> 1 </LEFT>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                <DO> <LEFT> 1 </LEFT>  </DO> </CONDITION> </SWITCH>
                             </DO>
                         </CONDITION> </SWITCH>
                     </DO>
@@ -449,7 +451,8 @@
                                                 </TO> 
                                 </ASSIGN>
                                 <ASSIGN> <VALUE>  <ADD> <VAR name = x /VAR> -1 </ADD> </VALUE> <TO>  <VAR name = x /VAR> </TO> </ASSIGN>
-                                <UP> 1 </UP>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO>  <UP> 1 </UP>  </DO> </CONDITION> </SWITCH>
                             </DO>
                         </CONDITION> </SWITCH>
                     </DO>
@@ -620,7 +623,8 @@
                                                 </TO> 
                                 </ASSIGN>
                                 <ASSIGN> <VALUE>  <ADD> <VAR name = y /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = y /VAR> </TO> </ASSIGN>
-                                <RIGHT> 1 </RIGHT>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                <DO>  <RIGHT> 1 </RIGHT>  </DO> </CONDITION> </SWITCH>
                             </DO>
                         </CONDITION> </SWITCH>
                     </DO>
