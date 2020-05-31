@@ -10,7 +10,7 @@ class Cell:
         self.type = type
 
 class Robot:
-	def __init__(self, file, drons = 1000):
+	def __init__(self, file, drons = 10000):
 		self.life = True
 		s = file.readline()
 		b=[]
@@ -21,6 +21,8 @@ class Robot:
 		for i in range(len(b)):
 			b[i]=[int(j) for j in b[i]]
 		self.map =b
+		print(len(self.map))
+		print(len(self.map[0]))
 		self.drons = drons
         
 	def show_map(self):
@@ -137,7 +139,7 @@ class Satellite:
 		#self.show_map()
 	def left(self):
 		self.y-=1
-		if (self.y<0 or self.y>=len(self.map)):
+		if (self.y<0 or self.y>=len(self.map[0])):
 			self.life=False
 			self.new_map.append(Cell(self.x,self.y,1))
 		else:
@@ -147,7 +149,7 @@ class Satellite:
 		#self.show_map()
 	def right(self):
 		self.y+=1
-		if (self.y<0 or self.y>=len(self.map)):
+		if (self.y<0 or self.y>=len(self.map[0])):
 			self.life=False
 			self.new_map.append(Cell(self.x,self.y,1))
 		else:

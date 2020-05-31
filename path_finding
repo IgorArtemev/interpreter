@@ -309,7 +309,7 @@
             </VAR>
             <VAR = tmp2>
                 <TYPE> BOOL </TYPE>
-                <VALUE> TRUE</VALUE>
+                <VALUE> TRUE </VALUE>
             </VAR>
            
         </VARDECLARATION>
@@ -575,7 +575,7 @@
         <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
         <SWITCH>
             <CONDITION> <CHECK> <EQ> <VAR name =map > <DIM> 
-                                                            <INDEX> <ADD> <VAR name = y /VAR> 0 </ADD> </INDEX> 
+                                                            <INDEX> <ADD> <VAR name = x /VAR> 0 </ADD> </INDEX> 
                                                             <INDEX> <ADD> <VAR name = y /VAR> -1 </ADD> </INDEX> 
                                                         </DIM> </VAR>
                                                         0 </EQ> </CHECK>
@@ -660,7 +660,7 @@
                 <CONDITION> <CHECK> <NOT>  <EQ>  <VAR name = n /VAR> 0 </EQ> </NOT> </CHECK>
                     <DO> 
                         <ASSIGN> <VALUE>  <SENDDRONS> 1 </SENDDRONS> </VALUE> <TO>  <VAR name = array /VAR> </TO> </ASSIGN>
-                        <ASSIGN> <VALUE>  0 </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN>
+                        <ASSIGN> <VALUE>  0 </VALUE> <TO>  <VAR name = i /VAR> </TO> </ASSIGN>
                         <WHILE> 
 			                <CHECK>
                                 <NOT> <EQ> <VAR name = i /VAR>  11 </EQ> </NOT>
