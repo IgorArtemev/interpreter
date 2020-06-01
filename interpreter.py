@@ -730,9 +730,9 @@ class Interpreter:
 		print(self.symbol_table)
 		
 if __name__ == '__main__':
-	map=open('test_robot','r')
+	map=open('robot2','r')
 	interpreter = Interpreter(map)
 	f=open('path_finding','r')
 	interpreter.interpreter(f.read())
 	f.close()
-	#interpreter.print_symbol()
+	interpreter.print_symbol()
