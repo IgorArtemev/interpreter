@@ -109,7 +109,7 @@ class Parser():
 
 	def p_assignment(self, p):
 		'assignment : ASSIGN_START VALUE_START expression VALUE_END TO_START variables TO_END ASSIGN_END'
-		p[0] = SyntaxTreeNode('assignment', children=[p[3], p[6]])
+		p[0] = SyntaxTreeNode('assignment', children=[p[3], p[6]],lineno=p.lineno(1), lexpos=p.lexpos(1))
 
 	def p_while(self, p):
 		'while : WHILE_START CHECK_START expression CHECK_END DO_START statements DO_END WHILE_END'
@@ -123,9 +123,9 @@ class Parser():
 		'''conditions : conditions condition
 		| condition'''
 		if len(p) == 2:
-			p[0] = SyntaxTreeNode('conditions', children=[p[1]])
+			p[0] = SyntaxTreeNode('conditions', children=[p[1]],lineno=p.lineno(1), lexpos=p.lexpos(1))
 		else:
-			p[0] = SyntaxTreeNode('conditions', children=[p[1], p[2]])
+			p[0] = SyntaxTreeNode('conditions', children=[p[1], p[2]],lineno=p.lineno(1), lexpos=p.lexpos(1))
 
 	def p_condition(self, p):
 		'''condition : CONDITION_START CHECK_START expression CHECK_END DO_START statements DO_END CONDITION_END
@@ -160,9 +160,9 @@ class Parser():
 		'''declarations : declarations declaration
 		| declaration'''
 		if len(p) == 2:
-			p[0] = SyntaxTreeNode('declarations', children=[p[1]])
+			p[0] = SyntaxTreeNode('declarations', children=[p[1]],lineno=p.lineno(1), lexpos=p.lexpos(1))
 		else:
-			p[0] = SyntaxTreeNode('declarations', children=[p[1], p[2]])
+			p[0] = SyntaxTreeNode('declarations', children=[p[1], p[2]],lineno=p.lineno(1), lexpos=p.lexpos(1))
 
 	def p_declaration(self,p):
 		'''declaration : declaration_var
@@ -206,9 +206,9 @@ class Parser():
 		'''values : values value
 		| value'''
 		if len(p) == 2:
-			p[0] = SyntaxTreeNode('values', children=[p[1]]) 
+			p[0] = SyntaxTreeNode('values', children=[p[1]],lineno=p.lineno(1), lexpos=p.lexpos(1)) 
 		else:
-			p[0] = SyntaxTreeNode('values', children=[p[1], p[2]])
+			p[0] = SyntaxTreeNode('values', children=[p[1], p[2]],lineno=p.lineno(1), lexpos=p.lexpos(1))
 
 	def p_value(self, p):
 		'''value : VALUE_START expression VALUE_END'''
@@ -218,9 +218,9 @@ class Parser():
 		'''dimensions : dimensions dimension
 		| dimension'''
 		if len(p) == 2:
-			p[0] = SyntaxTreeNode('dimensions', children=[p[1]]) 
+			p[0] = SyntaxTreeNode('dimensions', children=[p[1]], lineno=p.lineno(1), lexpos=p.lexpos(1)) 
 		else:
-			p[0] = SyntaxTreeNode('dimensions', children=[p[1], p[2]])
+			p[0] = SyntaxTreeNode('dimensions', children=[p[1], p[2]], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
 	def p_dimension(self, p):
 		'''dimension : DIMENSION_START expression DIMENSION_END'''
@@ -240,9 +240,9 @@ class Parser():
 		'''variables : variables variable
 		| variable'''
 		if len(p) == 2:
-			p[0] = SyntaxTreeNode('variables', children=[p[1]]) 
+			p[0] = SyntaxTreeNode('variables', children=[p[1]],lineno=p.lineno(1), lexpos=p.lexpos(1)) 
 		else:
-			p[0] = SyntaxTreeNode('variables', children=[p[1], p[2]])
+			p[0] = SyntaxTreeNode('variables', children=[p[1], p[2]],lineno=p.lineno(1), lexpos=p.lexpos(1))
 
 	def p_variable(self, p):  
 		'''variable : VAR_START NAME EQUALSIGN id VAR_END
@@ -259,9 +259,9 @@ class Parser():
 		'''indexes : indexes index
 		| index'''
 		if len(p) == 2:
-			p[0] = SyntaxTreeNode('indexes', children=[p[1]]) 
+			p[0] = SyntaxTreeNode('indexes', children=[p[1]],lineno=p.lineno(1), lexpos=p.lexpos(1)) 
 		else:
-			p[0] = SyntaxTreeNode('indexes', children=[p[1], p[2]])
+			p[0] = SyntaxTreeNode('indexes', children=[p[1], p[2]],lineno=p.lineno(1), lexpos=p.lexpos(1))
 	
 	def p_index(self, p):
 		'''index : INDEX_START expression INDEX_END'''
@@ -271,9 +271,9 @@ class Parser():
 		'''expressions : expressions expression
 		| expression'''
 		if len(p) == 2:
-			p[0] = SyntaxTreeNode('expressions', children=[p[1]]) 
+			p[0] = SyntaxTreeNode('expressions', children=[p[1]],lineno=p.lineno(1), lexpos=p.lexpos(1)) 
 		else:
-			p[0] = SyntaxTreeNode('expressions', children=[p[1], p[2]])
+			p[0] = SyntaxTreeNode('expressions', children=[p[1], p[2]],lineno=p.lineno(1), lexpos=p.lexpos(1))
 
 	def p_expression(self, p): #добавить senddrons
 		'''expression : variable
@@ -328,7 +328,7 @@ class Parser():
 
 if __name__ == '__main__':
 	parser = Parser()
-	f=open('path_finding','r')
+	f=open('test_fibonacci','r')
 	tree, functions,ok = parser.parse(f.read())
 	f.close()
 

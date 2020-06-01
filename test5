@@ -1,0 +1,108 @@
+<PROGRAM>
+	<VARDECLARATION>
+		<VAR = array CONST = TRUE>
+			<TYPE> INT </TYPE>
+			<DIMENSIONS count = 3>       
+				<DIMENSION> 2 </DIMENSION>   
+				<DIMENSION> 2 </DIMENSION> 
+                <DIMENSION> 2 </DIMENSION>               
+			</DIMENSIONS>
+			<VALUES> 		<VALUE> <DIV> 50 10 </DIV> </VALUE>
+						<VALUE> 11 </VALUE>
+						<VALUE> 12 </VALUE>
+						<VALUE> 13 </VALUE>
+						<VALUE> 20 </VALUE>
+						<VALUE> FALSE </VALUE>
+						<VALUE> 22 </VALUE>
+						<VALUE> 23 </VALUE>
+                        
+			</VALUES> 
+		</VAR>
+		<VAR = array_2>
+			<TYPE> INT </TYPE>
+			<DIMENSIONS count = 3>       
+				<DIMENSION> 2 </DIMENSION>   
+				<DIMENSION> 2 </DIMENSION> 
+                <DIMENSION> 2 </DIMENSION>           
+			</DIMENSIONS>
+		</VAR>
+		<VAR = check> <TYPE> INT </TYPE> </VAR>
+	</VARDECLARATION>
+	<FUNC name = main>
+		<ASSIGN> 
+			<VALUE> <VAR name = array /VAR>  </VALUE> 
+			<TO> <VAR name = array_2 /VAR>  </TO>
+		</ASSIGN>
+		<ASSIGN> 
+			<VALUE> 1 </VALUE> 
+			<TO> <VAR name = array> <DIM> <INDEX> 1 </INDEX> <INDEX> 1 </INDEX> <INDEX> 1 </INDEX> </DIM> </VAR> </TO>
+		</ASSIGN>
+		<ASSIGN> 
+			<VALUE> 5 </VALUE> 
+			<TO> <VAR name = array_2> <DIM> <INDEX> 1 </INDEX> <INDEX> 1 </INDEX> <INDEX> 1 </INDEX> </DIM> </VAR> </TO>
+		</ASSIGN>
+		<ASSIGN> 
+			<VALUE> <VAR name = array> <DIM> <INDEX> 1 </INDEX> <INDEX> 1 </INDEX> <INDEX> 1 </INDEX> </DIM> </VAR> </VALUE> 
+			<TO> <VAR name = check /VAR> </TO>
+		</ASSIGN>
+        <CALL> func </CALL>
+            <VARDECLARATION>
+            <VAR = array3 >
+			<TYPE> INT </TYPE>
+			<DIMENSIONS count = 3>       
+				<DIMENSION> 2 </DIMENSION>   
+				<DIMENSION> 2 </DIMENSION> 
+                <DIMENSION> 2 </DIMENSION>               
+			</DIMENSIONS>
+			<VALUES> 	
+                        <VALUE> <DIV> 50 10 </DIV> </VALUE>
+						<VALUE> 11 </VALUE>
+						<VALUE> 12 </VALUE>
+						
+			</VALUES> 
+            </VAR>
+            
+            <VAR = array4 >
+			<TYPE> INT </TYPE>
+			<DIMENSIONS count = 3>       
+				<DIMENSION> 2 </DIMENSION>   
+				<DIMENSION> 2 </DIMENSION> 
+                <DIMENSION> 2 </DIMENSION>               
+			</DIMENSIONS>
+            <VALUES> 		<VALUE> <DIV> 50 10 </DIV> </VALUE>
+						<VALUE> WALL </VALUE>
+						<VALUE> 12 </VALUE>
+						<VALUE> 13 </VALUE>
+						<VALUE> 20 </VALUE>
+						<VALUE> 21 </VALUE>
+						<VALUE> 22 </VALUE>
+						<VALUE> 23 </VALUE>
+                        
+			</VALUES> 
+            
+            </VAR>
+            <VAR = cell> <TYPE> CELL </TYPE> <VALUE> WALL </VALUE> </VAR>
+            <VAR = s> <TYPE> INT </TYPE>  </VAR>
+            </VARDECLARATION>
+            <ASSIGN> 
+			<VALUE> <VAR name = array> <DIM> <INDEX> 1 </INDEX> <INDEX> 1 </INDEX> <INDEX> 1 </INDEX> </DIM> </VAR> </VALUE> 
+			<TO> <VAR name = check2 /VAR> </TO>
+		</ASSIGN>
+            <ASSIGN> 
+			<VALUE> <VAR name = array> <DIM> <INDEX> 1 </INDEX> <INDEX> 1 </INDEX> <INDEX> 2 </INDEX> </DIM> </VAR> </VALUE> 
+			<TO> <VAR name = check /VAR> </TO>
+		</ASSIGN>
+        <ASSIGN> 
+			<VALUE> <ADD> <VAR name = array /VAR> <VAR name = array_2 /VAR> </ADD> </VALUE> 
+			<TO> <VAR name = array_2 /VAR>  </TO>
+		</ASSIGN>
+        <ASSIGN> 
+			<VALUE> <ADD> <VAR name = cell /VAR> 1 </ADD> </VALUE> 
+			<TO> <VAR name = cell /VAR>  </TO>
+		</ASSIGN>
+        <ASSIGN> 
+			<VALUE> <ADD> <VAR name = s /VAR> 1 </ADD> </VALUE> 
+			<TO> <VAR name = s /VAR>  </TO>
+		</ASSIGN>
+	</FUNC>
+</PROGRAM>

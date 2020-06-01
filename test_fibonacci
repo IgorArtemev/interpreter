@@ -1,0 +1,73 @@
+<PROGRAM>
+	<VARDECLARATION>
+		<VAR = n> <TYPE> INT </TYPE> <VALUE> 10 </VALUE>  </VAR>
+        <VAR = a> <TYPE> INT </TYPE> </VAR>
+	</VARDECLARATION>
+    <FUNC name = func>
+        <VARDECLARATION>
+			<VAR = b> <TYPE> INT </TYPE> </VAR>
+			<VAR = n2> <TYPE> INT </TYPE> </VAR>
+            <VAR = n3> <TYPE> INT </TYPE> </VAR>
+		</VARDECLARATION>
+        <ASSIGN> 
+						<VALUE>  <VAR name = n /VAR>   </VALUE> 
+						<TO> <VAR name = n3 /VAR> </TO>
+		</ASSIGN> 
+        <SWITCH>
+			<CONDITION>
+				<CHECK> <AND> <NOT> <EQ> <VAR name = n /VAR> 0 </EQ> </NOT> <NOT> <EQ> <VAR name = n /VAR> 1 </EQ> </NOT> <NOT> <EQ> <VAR name = n /VAR> 2 </EQ> </NOT>  </AND></CHECK>
+				<DO>
+                    <ASSIGN>
+						<VALUE> <SUB> <VAR name = n /VAR> 1 </SUB> </VALUE> 
+						<TO> <VAR name = n /VAR> </TO>
+					</ASSIGN>
+                    <ASSIGN> 
+						<VALUE>  <VAR name = n /VAR>   </VALUE> 
+						<TO> <VAR name = n2 /VAR> </TO>
+					</ASSIGN>
+					<CALL> func </CALL>
+                    <ASSIGN> 
+						<VALUE>  <VAR name = n2 /VAR>   </VALUE> 
+						<TO> <VAR name = n /VAR> </TO>
+					</ASSIGN>
+                    <ASSIGN> 
+						<VALUE> <VAR name = a /VAR> </VALUE> 
+						<TO> <VAR name = b /VAR> </TO>
+					</ASSIGN>
+                    <ASSIGN> 
+						<VALUE> <SUB> <VAR name = n /VAR> 1 </SUB> </VALUE> 
+						<TO> <VAR name = n /VAR> </TO>
+					</ASSIGN>
+					<CALL> func </CALL>
+					<ASSIGN> 
+						<VALUE>
+							<ADD> <VAR name = b /VAR> <VAR name = a /VAR> </ADD> 
+						</VALUE> 
+						<TO> <VAR name = a /VAR> </TO>
+					</ASSIGN>
+				</DO>
+			</CONDITION>
+			<CONDITION>
+				<CHECK> <EQ> <VAR name = n3 /VAR> 0 </EQ> </CHECK>
+					<DO>
+						<ASSIGN> 
+							<VALUE> 0 </VALUE> 
+							<TO> <VAR name = a /VAR> </TO>
+						</ASSIGN>
+					</DO>
+			</CONDITION>
+            <CONDITION>
+				<CHECK> <OR> <EQ> <VAR name = n3 /VAR> 2 </EQ>  <EQ> <VAR name = n3 /VAR> 1 </EQ> </OR> </CHECK>
+					<DO>
+						<ASSIGN> 
+							<VALUE> 1 </VALUE> 
+							<TO> <VAR name = a /VAR> </TO>
+						</ASSIGN>
+					</DO>
+			</CONDITION>
+		</SWITCH>
+    </FUNC>
+    <FUNC name = main>  
+          <CALL> func </CALL>
+	</FUNC>
+</PROGRAM>

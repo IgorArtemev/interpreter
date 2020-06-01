@@ -476,6 +476,13 @@ class Interpreter:
 		if var[0].dim == 0: #немассив
 			sys.stderr.write(f'error: variable {name} is not an array\n')
 			return
+		if var[0].dim != len(indexes): #немассив
+			sys.stderr.write(f'error: incorrect count of indexes\n')
+			return
+		for a in range(len(indexes)):
+			if indexes[a]>=var[0].dims[a]:
+				sys.stderr.write(f'error: out of the range \n')
+				return
 		i = var[0].index_recount(indexes)
 		if var[0].const_flag is True:
 			var[0].value[i].const_flag=True
@@ -579,10 +586,13 @@ class Interpreter:
 		summ = 0
 		for expression in expressions:
 			if expression.type == 'CELL':
-				sys.stderr.write(f'error: cannot convert CELL to INT to do the addition in {op.lineno}\n')
+				sys.stderr.write(f'error: cannot convert CELL to INT to do the addition\n')
 				return
 			if expression.dim != 0:
-				sys.stderr.write(f'error: there is no addition for arrays in {op.lineno}\n')
+				sys.stderr.write(f'error: there is no addition for arrays\n')
+				return
+			if expression.value == None:
+				sys.stderr.write(f'error: uninitialized variable\n')
 				return
 			summ += expression.value
 		return Variable('INT', summ, False)
@@ -730,9 +740,9 @@ class Interpreter:
 		print(self.symbol_table)
 		
 if __name__ == '__main__':
-	map=open('robot2','r')
+	map=open('robot3','r')
 	interpreter = Interpreter(map)
-	f=open('path_finding','r')
+	f=open('test_fibonacci','r')
 	interpreter.interpreter(f.read())
 	f.close()
 	interpreter.print_symbol()
