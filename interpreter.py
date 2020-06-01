@@ -21,8 +21,6 @@ class Robot:
 		for i in range(len(b)):
 			b[i]=[int(j) for j in b[i]]
 		self.map =b
-		print(len(self.map))
-		print(len(self.map[0]))
 		self.drons = drons
         
 	def show_map(self):
@@ -31,7 +29,7 @@ class Robot:
 				if i == self.x and j == self.y:
 					print("0", end='') #Robot
 				elif self.map[i][j] == 1: #Wall
-					print("*", end='')	
+					print("#", end='')	
 				elif self.map[i][j]  ==3: #Exit
 					print("X", end='')
 				else:          #Empty
@@ -105,18 +103,6 @@ class Satellite:
 		self.y = y
 		self.map = _map
 		self.new_map = []
-	def show_map(self):
-		for i in range(len(self.map)):
-			for j in range(len(self.map[0])):
-				if i == self.x and j == self.y:
-					print("0", end='') #Robot
-				elif self.map[i][j] == 1: #Wall
-					print("*", end='')	
-				elif self.map[i][j]  ==3: #Exit
-					print("X", end='')
-				else:          #Empty
-					print(" ", end='')			
-			print()
 	def up(self):
 		self.x-=1
 		if (self.x<0 or self.x>=len(self.map)):
@@ -126,7 +112,7 @@ class Satellite:
 			if self.map[self.x][self.y] == 1:
 				self.life=False
 			self.new_map.append(Cell(self.x,self.y,self.map[self.x][self.y]))
-		#self.show_map()
+		
 	def down(self):
 		self.x+=1
 		if (self.x<0 or self.x>=len(self.map)):
@@ -136,7 +122,7 @@ class Satellite:
 			if self.map[self.x][self.y] == 1:
 				self.life=False
 			self.new_map.append(Cell(self.x,self.y,self.map[self.x][self.y]))
-		#self.show_map()
+		
 	def left(self):
 		self.y-=1
 		if (self.y<0 or self.y>=len(self.map[0])):
@@ -146,7 +132,7 @@ class Satellite:
 			if self.map[self.x][self.y] == 1:
 				self.life=False
 			self.new_map.append(Cell(self.x,self.y,self.map[self.x][self.y]))
-		#self.show_map()
+		
 	def right(self):
 		self.y+=1
 		if (self.y<0 or self.y>=len(self.map[0])):
@@ -156,7 +142,7 @@ class Satellite:
 			if self.map[self.x][self.y] == 1:
 				self.life=False
 			self.new_map.append(Cell(self.x,self.y,self.map[self.x][self.y]))
-		#self.show_map()
+		
 	def exploring(self):
 		steps=random.randint(1,5)
 		for i in range(steps):
@@ -175,7 +161,7 @@ class Satellite:
 		return self.new_map
 
 class Variable:
-	#перегрузка операторов:
+	
 	def __init__(self, symtype='var', value=None, const_flag=False, dim=0,dims=[]):
 		self.type = symtype
 		self.value = value
@@ -183,7 +169,7 @@ class Variable:
 		self.dim=dim
 		self.dims=dims
         
-	def __repr__(self):  # нужен красивый вывод массива
+	def __repr__(self):  
 		if self.dim != 0:
 			values = []
 			for var in self.value:
@@ -241,7 +227,6 @@ class Interpreter:
 		self.prog = prog
 		self.tree, self.functions, parsing_ok = self.parser.parse(self.prog)
 		if parsing_ok:
-			#self.interpreter_tree(self.tree)
 			self.interpreter_node(self.tree)
 			if 'main' not in self.functions.keys():
 				sys.stderr.write(f'error: no main function\n ')
@@ -263,53 +248,39 @@ class Interpreter:
 		if node is None:
 			return
 		if node.type == 'program':
-			#print(node.lineno)
 			self.interpreter_node(node.children)
 		elif node.type == 'blocks' or node.type == 'conditions' or node.type == 'statements' or node.type == 'declarations':
-			#print(node.lineno)
 			for child in node.children: 
 				self.interpreter_node(child)
 		elif node.type == 'vardeclaration' or node.type == 'switch':
-			#print(node.lineno)
 			self.interpreter_node(node.children)
 		elif node.type == 'declaration_var':
 			name = node.children.value
-			#print(node.lineno)
 			if (name in self.symbol_table[self.scope].keys()) or (name in self.symbol_table[0].keys()):
-				sys.stderr.write(f'error: redeclaration of variable {name}\n')
+				sys.stderr.write(f'error: redeclaration of variable {name} in {node.lineno}\n')
 				return
 			else:
 				self.symbol_table[self.scope][name] = Variable(node.value.value, None, False)
 		elif node.type == 'declaration_var_init':
-			#print(node.lineno)
 			self.initialization(node, False)
 		elif node.type == 'declaration_var_const':
-			#print(node.lineno)
 			self.initialization(node, True)
 		elif node.type == 'declaration_array':
-			#print(node.lineno)
 			self.array_declaration(node, False)
 		elif node.type == 'declaration_array_init': 
-			#print(node.lineno)
 			self.array_initialization(node, False)
 		elif node.type == 'declaration_array_const':
-			#print(node.lineno)
 			self.array_initialization(node, True)
 		elif node.type == 'function':
-			#print(node.lineno)
 			if node.value.value not in self.functions.keys():
-				self.functions[node.value.value] = node.children #занесли в словарь имя функции : statements
-				#self.interpreter_node(node.children)              
+				self.functions[node.value.value] = node.children 
 			else:                                                        
-				sys.stderr.write(f'error: redeclaration of function {node.value.value}\n')
-		elif node.type == 'function_call': # можно ли вызывать main?
-			#print(node.lineno)
+				sys.stderr.write(f'error: redeclaration of function {node.value.value} in {node.lineno}\n')
+		elif node.type == 'function_call': 
 			self.function_call(node)
 		elif node.type == 'assignment':
-			#print(node.lineno)
 			self.assignment(node)
 		elif node.type == 'variables' or node.type == 'dimensions' or node.type == 'indexes' or node.type == 'values': 
-			#print(node.lineno)
 			variables = []
 			for child in node.children:
 				var = self.interpreter_node(child)
@@ -318,18 +289,14 @@ class Interpreter:
 				else: return None
 			return variables
 		elif node.type == 'variable':
-			#print(node.lineno)
 			name = node.value.value
-			##print(name)
 			return self.find_variable(name)
 		elif node.type == 'variable_array':
-			#print(node.lineno)
 			name = node.value.value
 			indexes = self.interpreter_node(node.children)
 			return self.find_elem_of_array(name, indexes)
 		elif node.type == 'const':
 			value = node.value
-			#print(node.lineno)
 			if isinstance(value, int):
 				return Variable('INT', value, True)
 			elif value == 'FALSE':
@@ -338,8 +305,7 @@ class Interpreter:
 				return Variable('BOOL', True, True)
 			else:
 				return Variable('CELL', value, True) #EMPTY/WALL/EXIT/UNDEF
-		elif node.type == 'expressions':
-			#print(node.lineno)
+		elif node.type == 'expressions':			
 			expressions = [] 
 			for child in node.children:
 				expr = self.interpreter_node(child)
@@ -349,72 +315,65 @@ class Interpreter:
 					else:
 						expressions.append(expr)
 				else: return None
-			#print(expressions)
-			return expressions #проверить не может ли вернуться пустой список
+			return expressions 
 		elif node.type == 'dimension':
-			#print(node.lineno)
 			expr = self.interpreter_node(node.children)
 			if isinstance(expr,list):
 				expr = expr[0]
 			if expr.dim != 0:
-				sys.stderr.write(f'error: dimension count cannot be initialized with array\n')
+				sys.stderr.write(f'error: dimension count cannot be initialized with array in {node.lineno}\n')
 				return
 			if expr.type == 'CELL':
-				sys.stderr.write(f'error: cannot convert CELL to INT to get the dimensions count\n')
+				sys.stderr.write(f'error: cannot convert CELL to INT to get the dimensions count in {node.lineno}\n')
 				return
 			return [int(expr.value)]
 		elif node.type == 'index':
-			#print(node.lineno)
 			expr = self.interpreter_node(node.children) 
 			if isinstance(expr,list):
 				expr = expr[0]
 			if expr.dim != 0:
-				sys.stderr.write(f'error: index cannot be initialized with array\n')
+				sys.stderr.write(f'error: index cannot be initialized with array in {node.lineno}\n')
 				return
 			if expr.type == 'CELL':
-				sys.stderr.write(f'error: cannot convert CELL to INT to get the index\n')
+				sys.stderr.write(f'error: cannot convert CELL to INT to get the index in {node.lineno}\n')
 				return
 			return [int(expr.value)]
 		elif node.type == 'value':
-			#print(node.lineno)
 			expr = self.interpreter_node(node.children)
 			if isinstance(expr,list):
 				expr = expr[0]
 			if expr.dim != 0:
-				sys.stderr.write(f'error: value cannot be initialized with array\n')
+				sys.stderr.write(f'error: value cannot be initialized with array in {node.lineno}\n')
 				return
 			return [expr]	
 		elif node.type == 'condition':
-			#print(node.lineno)
 			condition = self.interpreter_node(node.children['condition'])
 			if isinstance(condition,list):
 				condition = condition[0]
 			if condition.type == 'CELL':
-				sys.stderr.write(f'error: cannot convert CELL to BOOL to check a condition\n')
+				sys.stderr.write(f'error: cannot convert CELL to BOOL to check a condition in {node.lineno}\n')
 				return
 			if condition.dim != 0:
-				sys.stderr.write(f'error: array cannot be condition\n')
+				sys.stderr.write(f'error: array cannot be condition in {node.lineno}\n')
 				return
 			if bool(condition.value) is True:
 				self.interpreter_node(node.children['body'])
 		elif node.type == 'while':
-			#print(node.lineno)
 			while True:
 				condition = self.interpreter_node(node.children['condition'])
 				if isinstance(condition,list):
 					condition = condition[0]
 				if condition.type == 'CELL':
-					sys.stderr.write(f'error: cannot convert CELL to BOOL to check a condition\n')
+					sys.stderr.write(f'error: cannot convert CELL to BOOL to check a condition in {node.lineno}\n')
 					return
 				if condition.dim != 0:
-					sys.stderr.write(f'error: array cannot be condition\n')
+					sys.stderr.write(f'error: array cannot be condition in {node.lineno}\n')
 					return
 				if bool(condition.value) is True:
 					self.interpreter_node(node.children['body'])
 				else:
 					break
 		elif node.type == 'math': #проверять expression на немассивность
-			#print(node.lineno)
 			if node.value == '<ADD>':
 				return self.addition(node.children)
 			elif node.value == '<MUL>':
@@ -436,7 +395,6 @@ class Interpreter:
 			elif node.value == '<NOT>':
 				return self.logic_not(node.children)
 		elif node.type == 'operator':
-			#print(node.lineno)
 			if node.value == '<LEFT>':
 				n=self.interpreter_node(node.children)
 				self.robot.left(n.value)
@@ -455,29 +413,26 @@ class Interpreter:
 					var = var[0]
 				n=self.robot.drons_count()
 				if var.dim !=0 or var.type != 'INT':
-					sys.stderr.write(f'error: assignment error\n')
+					sys.stderr.write(f'error: assignment error in {node.lineno}\n')
 					return
 				var.value=n
 		elif node.type == 'senddrons':
-			#print(node.lineno)
 			n=self.interpreter_node(node.children)
 			array=self.robot.send_drons(n.value)
-			#print(array)
 			cells=[]
 			a=['UNDEF','WALL','EMPTY','EXIT']
 			for i in array:
 				cells.append(Variable('CELL', a[i], False))
-			#print(cells)
 			return Variable('CELL', cells, True, 2, [11,11])
 
 	def assignment(self, node: parser.SyntaxTreeNode): 
 		variables = self.interpreter_node(node.children[1])
 		if variables is None:
-			sys.stderr.write(f'error: incorrect variables in assignment\n')
+			sys.stderr.write(f'error: incorrect variables in assignment in {node.lineno}\n')
 			return
 		expression = self.interpreter_node(node.children[0])
 		if expression is None:
-			sys.stderr.write(f'error: incorrect expression in assignment\n')
+			sys.stderr.write(f'error: incorrect expression in assignment in {node.lineno}\n')
 			return 
 		if isinstance(expression,list):
 			expression = expression[0]
@@ -488,26 +443,25 @@ class Interpreter:
 		if expression.dim == 0 and arr == 0: #везде немассивы
 			for var in variables:
 				if var.const_flag is True:
-					sys.stderr.write(f'error: cannot reinitialize the constant\n')
+					sys.stderr.write(f'error: cannot reinitialize the constant in {node.lineno}\n')
 					return
 				conversed_var = self.type_conversion(var, expression)
 				if conversed_var is None: 
-					sys.stderr.write(f'error: assignment error\n')
+					sys.stderr.write(f'error: assignment error in {node.lineno}\n')
 					return
 				var.type = conversed_var.type
 				var.value = conversed_var.value
 		elif expression.dim != 0 and arr == len(variables) and arr != 0: #везде массивы
 			for var in variables:
 				if var.const_flag is True:
-					sys.stderr.write(f'error: cannot reinitialize the constant\n')
+					sys.stderr.write(f'error: cannot reinitialize the constant in {node.lineno}\n')
 					return
 				if var.dims != expression.dims:
-					sys.stderr.write(f'error: different sizes of arrays in assignment\n')
+					sys.stderr.write(f'error: different sizes of arrays in assignment in {node.lineno}\n')
 					return
-				#преобразование типов для массивов
 				var.value = copy.deepcopy(expression.value)
 		else:
-			sys.stderr.write(f'error: cannot assign array to not array and vice versa(i naoborot)\n')
+			sys.stderr.write(f'error: cannot assign array to not array and vice versa(i naoborot) in {node.lineno}\n')
 			return
 	
 	def find_variable(self, name):
@@ -527,7 +481,7 @@ class Interpreter:
 			var[0].value[i].const_flag=True
 		return [var[0].value[i]]
 	
-	def bool_to_int(self, var: Variable):#для массивов сделать
+	def bool_to_int(self, var: Variable):
 		var.type = 'INT'
 		if var.value is True:
 			var.value = 1
@@ -535,7 +489,7 @@ class Interpreter:
 			var.value = 0
 		return var
 		
-	def int_to_bool(self, var: Variable):#для массивов сделать
+	def int_to_bool(self, var: Variable):
 		var.type = 'BOOL'
 		if var.value == 0:
 			var.value = False
@@ -560,14 +514,14 @@ class Interpreter:
 		vartype = node.value.value
 		name = node.children[0].value
 		if (name in self.symbol_table[self.scope].keys()) or (name in self.symbol_table[0].keys()):
-			sys.stderr.write(f'error: redeclaration of variable {name}\n')
+			sys.stderr.write(f'error: redeclaration of variable {name} in {node.lineno}\n')
 			return
 		expr = self.interpreter_node(node.children[1])
 		if isinstance(expr,list):
 			expr = expr[0]	
 		var = self.type_conversion(Variable(vartype, None, flag), expr)
 		if var is None: 
-			sys.stderr.write(f'error: initialization error of variable {name}\n')
+			sys.stderr.write(f'error: initialization error of variable {name} in {node.lineno}\n')
 			return 
 		self.symbol_table[self.scope][name] = var
 
@@ -576,12 +530,12 @@ class Interpreter:
 		name = node.children[0].value
 		dimvar = self.interpreter_node(node.children[1]) 
 		if dimvar.type == 'CELL':
-			sys.stderr.write(f'error: cannot convert CELL to INT to get the dimensions count\n')
+			sys.stderr.write(f'error: cannot convert CELL to INT to get the dimensions count in {node.lineno}\n')
 			return
 		dim = int(dimvar.value)
 		dimensions = self.interpreter_node(node.children[2])
 		if dimensions is None or len(dimensions) != dim:
-			sys.stderr.write(f'error: DIMENSIONS count shoul be equal to number of DIMENSION blocks\n')
+			sys.stderr.write(f'error: DIMENSIONS count shoul be equal to number of DIMENSION blocks in {node.lineno}\n')
 			return
 		size=1
 		for i in dimensions:
@@ -596,40 +550,39 @@ class Interpreter:
 		name = node.children[0].value
 		dimvar = self.interpreter_node(node.children[1]) 
 		if dimvar.type == 'CELL':
-			sys.stderr.write(f'error: cannot convert CELL to INT to get the dimensions count\n')
+			sys.stderr.write(f'error: cannot convert CELL to INT to get the dimensions count in {node.lineno}\n')
 			return
 		dim = int(dimvar.value)
 		dimensions = self.interpreter_node(node.children[2])
 		if dimensions is None or len(dimensions) != dim:
-			sys.stderr.write(f'error: DIMENSIONS count shoul be equal to number of DIMENSION blocks\n')
+			sys.stderr.write(f'error: DIMENSIONS count shoul be equal to number of DIMENSION blocks in {node.lineno}\n')
 			return
 		values = self.interpreter_node(node.children[3])
 		for i in range(len(values)):
 			values[i] = self.type_conversion(Variable(vartype, None, False), values[i])
 			if values[i] is None: 
-				sys.stderr.write(f'error: initialization error of variable {name}\n')
+				sys.stderr.write(f'error: initialization error of variable {name} in {node.lineno}\n')
 				return
-			#values[i] = values[i].value
 		dimension = 1
 		for dmn in dimensions:
 			dimension *= dmn
 		if dimension != len(values):
-			sys.stderr.write(f'error: dimension shoul be equal to number of <VALUE> blocks\n')
+			sys.stderr.write(f'error: dimension shoul be equal to number of <VALUE> blocks in {node.lineno}\n')
 			return
 		self.symbol_table[self.scope][name] = Variable(vartype, values, flag, dim, dimensions)
 			
 	def addition(self, op: parser.SyntaxTreeNode):
 		expressions = self.interpreter_node(op)
 		if (expressions is None): # or (len(expressions) < 2)
-			sys.stderr.write(f'error: more arguments in addition expected\n')
+			sys.stderr.write(f'error: more arguments in addition expected in {op.lineno}\n')
 			return
 		summ = 0
 		for expression in expressions:
 			if expression.type == 'CELL':
-				sys.stderr.write(f'error: cannot convert CELL to INT to do the addition\n')
+				sys.stderr.write(f'error: cannot convert CELL to INT to do the addition in {op.lineno}\n')
 				return
 			if expression.dim != 0:
-				sys.stderr.write(f'error: there is no addition for arrays\n')
+				sys.stderr.write(f'error: there is no addition for arrays in {op.lineno}\n')
 				return
 			summ += expression.value
 		return Variable('INT', summ, False)
@@ -637,15 +590,15 @@ class Interpreter:
 	def multiplication(self, op: parser.SyntaxTreeNode):
 		expressions = self.interpreter_node(op)
 		if (expressions is None): # or (len(expressions) < 2
-			sys.stderr.write(f'error: more arguments in multiplication expected\n')
+			sys.stderr.write(f'error: more arguments in multiplication expected in {op.lineno}\n')
 			return
 		mul = 1
 		for expression in expressions:
 			if expression.type == 'CELL':
-				sys.stderr.write(f'error: cannot convert CELL to INT to do the multiplication\n')
+				sys.stderr.write(f'error: cannot convert CELL to INT to do the multiplication in {op.lineno}\n')
 				return
 			if expression.dim != 0:
-				sys.stderr.write(f'error: there is no multiplication for arrays\n')
+				sys.stderr.write(f'error: there is no multiplication for arrays in {op.lineno}\n')
 				return
 			mul *= expression.value
 		return Variable('INT', mul, False)
@@ -653,118 +606,117 @@ class Interpreter:
 	def subtraction(self, op: parser.SyntaxTreeNode):
 		expressions = self.interpreter_node(op)
 		if (expressions is None) or (len(expressions) != 2):
-			sys.stderr.write(f'error: two arguments in subtraction expected\n')
+			sys.stderr.write(f'error: two arguments in subtraction expected in {op.lineno}\n')
 			return
 		if (expressions[0].type == 'CELL') or (expressions[1].type == 'CELL'):
-			sys.stderr.write(f'error: cannot convert CELL to INT to do the subtraction\n')
+			sys.stderr.write(f'error: cannot convert CELL to INT to do the subtraction in {op.lineno}\n')
 			return
 		if (expressions[0].dim != 0) or (expressions[1].dim != 0):
-				sys.stderr.write(f'error: there is no substraction for arrays\n')
+				sys.stderr.write(f'error: there is no substraction for arrays in {op.lineno}\n')
 				return
 		return Variable('INT', expressions[0].value - expressions[1].value, False)
 
 	def division(self, op: parser.SyntaxTreeNode):
 		expressions = self.interpreter_node(op)
 		if (expressions is None) or (len(expressions) != 2):
-			sys.stderr.write(f'error: more arguments in division expected\n')
+			sys.stderr.write(f'error: more arguments in division expected in {op.lineno}\n')
 			return
 		if expressions[1].value == 0:
 			sys.stderr.write(f'error: division by zero\n')
 			return
 		if (expressions[0].type == 'CELL') or (expressions[1].type == 'CELL'):
-			sys.stderr.write(f'error: cannot convert CELL to INT to do the division\n')
+			sys.stderr.write(f'error: cannot convert CELL to INT to do the division in {oplineno}\n')
 			return
 		if (expressions[0].dim != 0) or (expressions[1].dim != 0):
-			sys.stderr.write(f'error: there is no division for arrays\n')
+			sys.stderr.write(f'error: there is no division for arrays in {op.lineno}\n')
 			return
 		return Variable('INT', expressions[0].value // expressions[1].value, False)
 
 	def maximum(self, op: parser.SyntaxTreeNode):
 		expressions = self.interpreter_node(op)
 		if (expressions is None):
-			sys.stderr.write(f'error: more arguments in maximum expected\n')
+			sys.stderr.write(f'error: more arguments in maximum expected in {op.lineno}\n')
 			return
 		for expression in expressions:
 			if expression.type == 'CELL':
-				sys.stderr.write(f'error: cannot convert CELL to INT to find the maximum\n')
+				sys.stderr.write(f'error: cannot convert CELL to INT to find the maximum in {op.lineno}\n')
 				return
 			if expression.dim != 0:
-				sys.stderr.write(f'error: there is no maximum for arrays\n')
+				sys.stderr.write(f'error: there is no maximum for arrays in {op.lineno}\n')
 				return
 		return Variable('INT', max(expressions).value, False)
 
 	def minimum(self, op: parser.SyntaxTreeNode):
 		expressions = self.interpreter_node(op)
 		if (expressions is None):
-			sys.stderr.write(f'error: more arguments in minimum expected\n')
+			sys.stderr.write(f'error: more arguments in minimum expected in {op.lineno}\n')
 			return
 		for expression in expressions:
 			if expression.type == 'CELL':
-				sys.stderr.write(f'error: cannot convert CELL to INT to find the minimum\n')
+				sys.stderr.write(f'error: cannot convert CELL to INT to find the minimum in {op.lineno}\n')
 				return
 			if expression.dim != 0:
-				sys.stderr.write(f'error: there is no minimum for arrays\n')
+				sys.stderr.write(f'error: there is no minimum for arrays in {op.lineno}\n')
 				return
 		return Variable('INT', min(expressions).value, False)
 
-	def equality(self, op: parser.SyntaxTreeNode): #непонятно, к какому типу приводить
+	def equality(self, op: parser.SyntaxTreeNode): 
 		expressions = self.interpreter_node(op)
 		if (expressions is None):
-			sys.stderr.write(f'error: more arguments in equality expected\n')
+			sys.stderr.write(f'error: more arguments in equality expected in {op.lineno}\n')
 			return
 		return Variable('BOOL', len(expressions) == expressions.count(expressions[0]), False)
 		
 	def logic_or(self, op: parser.SyntaxTreeNode):
 		expressions = self.interpreter_node(op)
 		if (expressions is None):
-			sys.stderr.write(f'error: more arguments in logic or expected\n')
+			sys.stderr.write(f'error: more arguments in logic or expected in {op.lineno}\n')
 			return
 		for expression in expressions:
 			if expression.type == 'CELL':
-				sys.stderr.write(f'error: cannot convert CELL to BOOL to do the logic or\n')
+				sys.stderr.write(f'error: cannot convert CELL to BOOL to do the logic or in {op.lineno}\n')
 				return
 			if expression.dim != 0:
-				sys.stderr.write(f'error: there is no logic or for arrays\n')
+				sys.stderr.write(f'error: there is no logic or for arrays in {op.lineno}\n')
 				return
 		return Variable('BOOL', any(expressions), False)
 
 	def logic_and(self, op: parser.SyntaxTreeNode):
 		expressions = self.interpreter_node(op)
 		if (expressions is None):
-			sys.stderr.write(f'error: more arguments in logic and expected\n')
+			sys.stderr.write(f'error: more arguments in logic and expected in {op.lineno}\n')
 			return
 		for expression in expressions:
 			if expression.type == 'CELL':
-				sys.stderr.write(f'error: cannot convert CELL to BOOL to do the logic and\n')
+				sys.stderr.write(f'error: cannot convert CELL to BOOL to do the logic and in {op.lineno}\n')
 				return
 			if expression.dim != 0:
-				sys.stderr.write(f'error: there is no logic and for arrays\n')
+				sys.stderr.write(f'error: there is no logic and for arrays in {op.lineno}\n')
 				return
 		return Variable('BOOL', all(expressions), False)
 		
 	def logic_not(self, op: parser.SyntaxTreeNode):
 		expression = self.interpreter_node(op)
 		if (expression is None):
-			sys.stderr.write(f'error: more arguments in logic not expected\n')
+			sys.stderr.write(f'error: more arguments in logic not expected in {op.lineno}\n')
 			return
 		if isinstance(expression,list):
 			expression = expression[0]
 		if expression.type == 'CELL':
-			sys.stderr.write(f'error: cannot convert CELL to BOOL to do the logic not\n')
+			sys.stderr.write(f'error: cannot convert CELL to BOOL to do the logic not in {op.lineno}\n')
 			return
 		if expression.dim != 0:
-			sys.stderr.write(f'error: there is no logic not for arrays\n')
+			sys.stderr.write(f'error: there is no logic not for arrays in {op.lineno}\n')
 			return
 		return Variable('BOOL', not expression.value, False)
 
 	def function_call(self, node: parser.SyntaxTreeNode):
 		if self.scope == 1000:
-			sys.stderr.write(f'error: recursion\n')
+			sys.stderr.write(f'error: recursion in {node.lineno}\n')
 			return
 		funcname = node.value.value
-		print(funcname)
 		if funcname not in self.functions.keys():
-			sys.stderr.write(f'error: call of undeclarated function\n')
+			sys.stderr.write(f'error: call of undeclarated function in {node.lineno}\n')
 			return
 		self.scope += 1
 		self.symbol_table.append(dict())
@@ -772,8 +724,8 @@ class Interpreter:
 		if statements is not None:
 			self.interpreter_node(statements)   
 		self.symbol_table.pop()
-		print(self.scope)
 		self.scope -= 1
+
 	def print_symbol(self):
 		print(self.symbol_table)
 		
@@ -783,4 +735,4 @@ if __name__ == '__main__':
 	f=open('path_finding','r')
 	interpreter.interpreter(f.read())
 	f.close()
-	interpreter.print_symbol()
+	#interpreter.print_symbol()
