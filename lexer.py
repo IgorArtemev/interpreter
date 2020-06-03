@@ -1,17 +1,14 @@
 import ply.lex as lex
 
 reserved = {
-	'INT': 'INT', 'BOOL': 'BOOL', 'TRUE': 'TRUE', 'FALSE': 'FALSE', 'count': 'COUNT', 'CELL': 'CELL', 'EMPTY': 'EMPTY',
-	'WALL': 'WALL','EXIT': 'EXIT', 'UNDEF': 'UNDEF', 'CONST': 'CONST', 'name': 'NAME', 'main': 'MAIN'
+	'CONST': 'CONST', 'name': 'NAME', 'main': 'MAIN', 'INT': 'INT', 'BOOL': 'BOOL', 'TRUE': 'TRUE', 'FALSE': 'FALSE', 'count': 'COUNT', 'CELL': 'CELL', 'EMPTY': 'EMPTY',
+	'WALL': 'WALL','EXIT': 'EXIT', 'UNDEF': 'UNDEF' 
 }
-reserved2 = {
-	'INT': 'INT', 'BOOL': 'BOOL', 'TRUE': 'TRUE', 'FALSE': 'FALSE', 'count': 'COUNT', 'CELL': 'CELL',
-	'CONST': 'CONST', 'name': 'NAME', 'main': 'MAIN'
-}
+
 
 class Lexer():
 
-	tokens = ['ID','NUMBER', 'EQUALSIGN','VARDECLARATION_START',
+	tokens = ['ID','NUMBER', 'EQUALSIGN','RBRACKET','LBRACKET','PROGRAM_START','PROGRAM_END','VARDECLARATION_START',
             'VARDECLARATION_END','VAR_START', 'VAR_END', 
             'TYPE_START','TYPE_END','DIMENSIONS_START',
             'DIMENSIONS_END','DIMENSION_START', 'DIMENSION_END', 
@@ -26,10 +23,32 @@ class Lexer():
             'DO_START','DO_END','SWITCH_START', 'SWITCH_END','CONDITION_START',
             'CONDITION_END','SENDDRONS_START','SENDDRONS_END', 
             'GETDRONSCOUNT_START','GETDRONSCOUNT_END','FUNC_START','FUNC_END',
-            'CALL_START','CALL_END','PROGRAM_START','PROGRAM_END','RBRACKET','LBRACKET', 'EMPTY', 'UNDEF', 'WALL', 'EXIT'] + list(reserved2.values())
+            'CALL_START','CALL_END'] + list(reserved.values())
 
 	t_ignore = ' \t' 
 
+	def t_ID(self, t):
+		r'[a-zA-Z_][a-zA-Z_0-9]*'
+		t.type = reserved.get(t.value,'ID') 
+		return t
+
+	def t_NUMBER(self, t):
+		r'(\+|-)?\d+'
+		t.value = int(t.value) 
+		return t
+
+	def t_EQUALSIGN(self, t):
+		r'='
+		return t
+
+	def t_PROGRAM_START(self,t):
+		r'<PROGRAM>'
+		return t
+    
+	def t_PROGRAM_END(self,t):
+		r'</PROGRAM>'
+		return t
+		
 	def t_VARDECLARATION_START(self,t):
 		r'<VARDECLARATION>'
 		return t
@@ -301,48 +320,6 @@ class Lexer():
 	def t_CALL_END(self,t):
 		r'</CALL>'
 		return t
-    
-	def t_PROGRAM_START(self,t):
-		r'<PROGRAM>'
-		return t
-    
-	def t_PROGRAM_END(self,t):
-		r'</PROGRAM>'
-		return t
-      
-	def t_ID(self, t):
-		r'[a-zA-Z_][a-zA-Z_0-9]*'
-		t.type = reserved.get(t.value,'ID') 
-		return t
-
-	def t_NUMBER(self, t):
-		r'(\+|-)?\d+'
-		t.value = int(t.value) 
-		return t
-
-	def t_UNDEF(self, t):
-		r'UNDEF'
-		t.value=0
-		return t
-
-	def t_WALL(self, t):
-		r'WALL'
-		t.value=1
-		return t
-	
-	def t_EMPTY(self, t):
-		r'EMPTY'
-		t.value=2
-		return t
-	
-	def t_EXIT(self, t):
-		r'EXIT'
-		t.value=3
-		return t
-
-	def t_EQUALSIGN(self, t):
-		r'='
-		return t
 
 	def t_LBRACKET(self, t):
 		r'\<'
@@ -351,13 +328,12 @@ class Lexer():
 	def t_RBRACKET(self, t):
 		r'\>'
 		return t
-
+		
 	def t_newline(self, t):
 		r'\n+'
 		t.lexer.lineno += len(t.value)
 
 	def t_error(self, t):
-		#print("Illegal character '%s'" % t.value[0])
 		t.lexer.skip(1)
 		return t
 

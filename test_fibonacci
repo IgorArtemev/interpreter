@@ -1,6 +1,6 @@
 <PROGRAM>
 	<VARDECLARATION>
-		<VAR = n> <TYPE> INT </TYPE> <VALUE> 10 </VALUE>  </VAR>
+		<VAR = n> <TYPE> INT </TYPE> <VALUE> 20 </VALUE>  </VAR>
         <VAR = a> <TYPE> INT </TYPE> </VAR>
 	</VARDECLARATION>
     <FUNC name = func>

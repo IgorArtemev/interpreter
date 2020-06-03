@@ -69,89 +69,6 @@ class Parser():
 		| empty'''
 		p[0] = p[1]
 
-	def p_block_error(self,p):
-		'''block : error'''
-		self.ok = False
-		if isinstance(p[1], str):
-			sys.stderr.write(f'Illegal symbol\n')
-		else:
-			sys.stderr.write(f'block error: "{p[1].value}" at {p[1].lineno}:{p[1].lexpos}\n')
-
-	def p_function(self, p):
-		'function : FUNC_START NAME EQUALSIGN funcname RBRACKET statements FUNC_END'
-		p[0] = SyntaxTreeNode('function', value=p[4], children=p[6], lineno=p.lineno(1)) #исправить
-		
-	def p_statements(self, p):
-		'''statements : statements statement
-		| statement'''
-		if len(p) == 2:
-			p[0] = SyntaxTreeNode('statements', children=[p[1]])
-		else:
-			p[0] = SyntaxTreeNode('statements', children=[p[1], p[2]])
-
-	def p_statement(self, p):
-		'''statement : vardeclaration
-		| assignment 
-		| while
-		| switch
-		| call
-		| operator
-		| empty'''
-		p[0] = p[1]
-
-	def p_statement_error(self, p):
-		'''statement : error'''
-		self.ok = False
-		if isinstance(p[1], str):
-			sys.stderr.write(f'Illegal symbol\n')
-		else:
-			sys.stderr.write(f'statement error: "{p[1].value}" at {p[1].lineno}:{p[1].lexpos}\n')
-
-	def p_assignment(self, p):
-		'assignment : ASSIGN_START VALUE_START expression VALUE_END TO_START variables TO_END ASSIGN_END'
-		p[0] = SyntaxTreeNode('assignment', children=[p[3], p[6]],lineno=p.lineno(1), lexpos=p.lexpos(1))
-
-	def p_while(self, p):
-		'while : WHILE_START CHECK_START expression CHECK_END DO_START statements DO_END WHILE_END'
-		p[0] = SyntaxTreeNode('while', children={'condition': p[3], 'body': p[6]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
-
-	def p_switch(self, p):
-		'switch : SWITCH_START conditions SWITCH_END'
-		p[0] = SyntaxTreeNode('switch', children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
-
-	def p_conditions(self, p):
-		'''conditions : conditions condition
-		| condition'''
-		if len(p) == 2:
-			p[0] = SyntaxTreeNode('conditions', children=[p[1]],lineno=p.lineno(1), lexpos=p.lexpos(1))
-		else:
-			p[0] = SyntaxTreeNode('conditions', children=[p[1], p[2]],lineno=p.lineno(1), lexpos=p.lexpos(1))
-
-	def p_condition(self, p):
-		'''condition : CONDITION_START CHECK_START expression CHECK_END DO_START statements DO_END CONDITION_END
-		| empty'''
-		if len(p) == 2:
-			p[0] = p[1]
-		else:
-			p[0] = SyntaxTreeNode('condition', children={'condition': p[3], 'body': p[6]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
-	
-	def p_condition_error(self, p):
-		'condition : error'
-		self.ok = False
-		if isinstance(p[1], str):
-			sys.stderr.write(f'Illegal symbol\n')
-		else:
-			sys.stderr.write(f'condition error: "{p[1].value}" at {p[1].lineno}:{p[1].lexpos}\n')
-			
-	def p_call(self, p):
-		'call : CALL_START funcname CALL_END'
-		p[0] = SyntaxTreeNode('function_call', value=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
-
-	def p_funcname(self, p):
-		'''funcname : ID
-		| MAIN'''
-		p[0] = SyntaxTreeNode('funcname', value=p[1], lineno=p.lineno(1))
-
 	def p_vardeclaration(self, p): 
 		'vardeclaration : VARDECLARATION_START declarations VARDECLARATION_END'
 		p[0] = SyntaxTreeNode('vardeclaration', children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
@@ -236,6 +153,74 @@ class Parser():
 		'''id : ID'''
 		p[0] = SyntaxTreeNode('id', value=p[1], children=[], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
+	def p_function(self, p):
+		'function : FUNC_START NAME EQUALSIGN funcname RBRACKET statements FUNC_END'
+		p[0] = SyntaxTreeNode('function', value=p[4], children=p[6], lineno=p.lineno(1)) 
+
+	def p_funcname(self, p):
+		'''funcname : ID
+		| MAIN'''
+		p[0] = SyntaxTreeNode('funcname', value=p[1], lineno=p.lineno(1))
+	
+	def p_statements(self, p):
+		'''statements : statements statement
+		| statement'''
+		if len(p) == 2:
+			p[0] = SyntaxTreeNode('statements', children=[p[1]])
+		else:
+			p[0] = SyntaxTreeNode('statements', children=[p[1], p[2]])
+
+	def p_statement(self, p):
+		'''statement : vardeclaration
+		| switch
+		| assignment 
+		| while
+		| call
+		| operator
+		| empty'''
+		p[0] = p[1]
+
+	def p_switch(self, p):
+		'switch : SWITCH_START conditions SWITCH_END'
+		p[0] = SyntaxTreeNode('switch', children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
+
+	def p_assignment(self, p):
+		'assignment : ASSIGN_START VALUE_START expression VALUE_END TO_START variables TO_END ASSIGN_END'
+		p[0] = SyntaxTreeNode('assignment', children=[p[3], p[6]],lineno=p.lineno(1), lexpos=p.lexpos(1))
+
+	def p_while(self, p):
+		'while : WHILE_START CHECK_START expression CHECK_END DO_START statements DO_END WHILE_END'
+		p[0] = SyntaxTreeNode('while', children={'condition': p[3], 'body': p[6]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
+
+	def p_conditions(self, p):
+		'''conditions : conditions condition
+		| condition'''
+		if len(p) == 2:
+			p[0] = SyntaxTreeNode('conditions', children=[p[1]],lineno=p.lineno(1), lexpos=p.lexpos(1))
+		else:
+			p[0] = SyntaxTreeNode('conditions', children=[p[1], p[2]],lineno=p.lineno(1), lexpos=p.lexpos(1))
+
+	def p_condition(self, p):
+		'''condition : CONDITION_START CHECK_START expression CHECK_END DO_START statements DO_END CONDITION_END
+		| empty'''
+		if len(p) == 2:
+			p[0] = p[1]
+		else:
+			p[0] = SyntaxTreeNode('condition', children={'condition': p[3], 'body': p[6]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
+	
+	def p_condition_error(self, p):
+		'condition : error'
+		self.ok = False
+		if isinstance(p[1], str):
+			sys.stderr.write(f'Illegal symbol\n')
+		else:
+			sys.stderr.write(f'condition error: "{p[1].value}" at {p[1].lineno}:{p[1].lexpos}\n')
+			
+	def p_call(self, p):
+		'call : CALL_START funcname CALL_END'
+		p[0] = SyntaxTreeNode('function_call', value=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
+	
+
 	def p_variables(self, p):
 		'''variables : variables variable
 		| variable'''
@@ -253,7 +238,7 @@ class Parser():
 		elif len(p) == 6:
 			p[0] = SyntaxTreeNode('variable', value=p[4], children=[], lineno=p.lineno(1), lexpos=p.lexpos(1))
 		else:
-			p[0] = SyntaxTreeNode('variable_array', value=p[4], children=p[7], lineno=p.lineno(1), lexpos=p.lexpos(1))
+			p[0] = SyntaxTreeNode('variable_in_array', value=p[4], children=p[7], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
 	def p_indexes(self, p):
 		'''indexes : indexes index
@@ -275,26 +260,26 @@ class Parser():
 		else:
 			p[0] = SyntaxTreeNode('expressions', children=[p[1], p[2]],lineno=p.lineno(1), lexpos=p.lexpos(1))
 
-	def p_expression(self, p): #добавить senddrons
+	def p_expression(self, p): 
 		'''expression : variable
+		| senddrons 
+		| standart_function
 		| const
-		| math
-		| empty
-		| senddrons '''
+		| empty'''
 		p[0] = p[1]
 
 	def p_const(self, p): 
-		'''const : TRUE
+		'''const : NUMBER 
+		| TRUE
 		| FALSE
-		| NUMBER
 		| EMPTY
 		| WALL
 		| EXIT
 		| UNDEF'''
 		p[0] = SyntaxTreeNode('const', value=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
-	def p_math(self, p): #нот без вызова процедуры
-		'''math : ADD_START expressions ADD_END
+	def p_standart_function(self, p): 
+		'''standart_function : ADD_START expressions ADD_END
 		| MUL_START expressions MUL_END
 		| SUB_START expressions SUB_END
 		| DIV_START expressions DIV_END
@@ -304,11 +289,7 @@ class Parser():
 		| MIN_START expressions MIN_END
 		| EQ_START expressions EQ_END
 		| NOT_START expression NOT_END'''
-		p[0] = SyntaxTreeNode('math', value=p[1], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
-	
-	def p_senddrons(self,p):
-		'''senddrons : SENDDRONS_START expression SENDDRONS_END'''
-		p[0] = SyntaxTreeNode('senddrons', value=p[1], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
+		p[0] = SyntaxTreeNode('standart_function', value=p[1], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
 	def p_operator(self, p): 
 		'''operator : LEFT_START expression LEFT_END
@@ -318,22 +299,40 @@ class Parser():
 		| GETDRONSCOUNT_START variable GETDRONSCOUNT_END'''
 		p[0] = SyntaxTreeNode('operator', value=p[1], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
-	def p_error(self,p):
-		sys.stderr.write(f'Syntax error at line {p.lineno}\n')
-		self.ok = False
+	def p_senddrons(self,p):
+		'''senddrons : SENDDRONS_START expression SENDDRONS_END'''
+		p[0] = SyntaxTreeNode('senddrons', value=p[1], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
 	def p_empty(self, p):
 		'empty : '
 		p[0] = SyntaxTreeNode('empty')
+		
+	def p_error(self,p):
+		sys.stderr.write(f'Syntax error at line {p.lineno}\n')
+		self.ok = False
+
+	def p_block_error(self,p):
+		'''block : error'''
+		self.ok = False
+		if isinstance(p[1], str):
+			sys.stderr.write(f'Illegal symbol\n')
+		else:
+			sys.stderr.write(f'block error: "{p[1].value}" at {p[1].lineno}:{p[1].lexpos}\n')
+	
+	def p_statement_error(self, p):
+		'''statement : error'''
+		self.ok = False
+		if isinstance(p[1], str):
+			sys.stderr.write(f'Illegal symbol\n')
+		else:
+			sys.stderr.write(f'statement error: "{p[1].value}" at {p[1].lineno}:{p[1].lexpos}\n')
 
 if __name__ == '__main__':
 	parser = Parser()
-	f=open('test_fibonacci','r')
+	f=open('path_finding','r')
 	tree, functions,ok = parser.parse(f.read())
 	f.close()
-
 	if tree is not None and ok is True:
 		tree.print()
-		#print(functions)
 	else:
 		print('error tree built')
